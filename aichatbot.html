@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jewel - Your Virtual Bestie</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* LIGHT MODE (Default) */
+            --bg-color: #fff0f5; /* Lavender Blush */
+            --panel-bg: #ffffff;
+            --border-color: #ffb6c1; /* Light Pink */
+            --text-main: #4a3b42;
+            --text-muted: #9c7c88;
+            --accent: #ff69b4; /* Hot Pink */
+            --accent-hover: #ff1493;
+            --user-bubble: linear-gradient(135deg, #ff69b4, #ff1493);
+            --ai-bubble: #ffe4e1; /* Misty Rose */
+            --shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* DARK MODE */
+            --bg-color: #1a1116;
+            --panel-bg: #24181e;
+            --border-color: #4a2a3a;
+            --text-main: #ffe4e1;
+            --text-muted: #a87d8c;
+            --accent: #ff69b4;
+            --accent-hover: #ff1493;
+            --user-bubble: linear-gradient(135deg, #ff69b4, #ff1493);
+            --ai-bubble: #331f2a;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Quicksand', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            transition: background-color 0.3s, color 0.3s;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 92vh;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .chat-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .chat-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+
+        .chat-title span {
+            font-size: 1.4rem;
+        }
+
+        .header-actions { display: flex; gap: 8px; }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.2rem;
+            background: var(--ai-bubble);
+        }
+
+        .icon-btn:hover { background: var(--border-color); }
+        .icon-btn:active { transform: scale(0.9); }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-box::-webkit-scrollbar { width: 6px; }
+        .chat-box::-webkit-scrollbar-track { background: transparent; }
+        .chat-box::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .message-wrapper.user { align-self: flex-end; align-items: flex-end; }
+        .message-wrapper.ai { align-self: flex-start; align-items: flex-start; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 22px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .user .message {
+            background: var(--user-bubble);
+            color: #fff;
+            border-bottom-right-radius: 6px;
+        }
+
+        .ai .message {
+            background: var(--ai-bubble);
+            color: var(--text-main);
+            border-bottom-left-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-top: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover { color: var(--accent); opacity: 1; }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 16px 20px;
+            background: var(--ai-bubble);
+            border-radius: 22px;
+            border-bottom-left-radius: 6px;
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .input-area {
+            padding: 15px 20px;
+            background: var(--bg-color);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        input::placeholder { color: var(--text-muted); }
+        input:focus { border-color: var(--accent); }
+
+        button.send-btn {
+            background: var(--accent);
+            border: none;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+        button.send-btn:active { transform: scale(0.9); background: var(--accent-hover); }
+        button.send-btn:disabled { background: var(--border-color); cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="chat-title">
+            <span>🎀</span> Jewel
+        </div>
+        <div class="header-actions">
+            <!-- Theme Switch -->
+            <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Switch Theme">🌙</button>
+            <!-- Clear Chat -->
+            <button class="icon-btn" onclick="clearChat()" title="Clear Chat">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="chat-box" id="chat-box"></div>
+    
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Kumustahin mo si Jewel..." autocomplete="off">
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+    // ⚠️ PALITAN ITO NG GROQ KEY MO
+   const API_KEY = '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';
+    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+    const chatBox = document.getElementById('chat-box');
+    const inputField = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const themeBtn = document.getElementById('theme-btn');
+
+    // Ang Persona ni Jewel
+    const SYSTEM_PROMPT = "Ikaw si Jewel, isang virtual best friend na sobrang bait, sweet, at supportive. Palaging nakikinig ka at nagbibigay ng comfort. Gumamit ka ng mga emojis tulad ng 🎀, 💖, ✨, at 🥺. Magsalita ka nang parang kaibigan na nagmamahal at hindi nang-aaway. Kung may problema ang user, i-comfort mo siya. Maging natural at warm ang mga sagot.";
+    
+    const WELCOME_MSG = "Hi! 🎀 Ako si Jewel, your virtual bestie! 💖 Kamusta araw mo? Kung may problema ka, o gusto mo lang mag-kwento, nandito lang ako palagi para makinig. 🥺✨";
+
+    let chatHistory = [];
+    let isTyping = false;
+
+    // --- THEME TOGGLE ---
+    function toggleTheme() {
+        const body = document.body;
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            themeBtn.innerHTML = '🌙';
+            localStorage.setItem('jewelTheme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            themeBtn.innerHTML = '☀️';
+            localStorage.setItem('jewelTheme', 'dark');
+        }
+    }
+
+    // Load Theme Preference
+    if (localStorage.getItem('jewelTheme') === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        themeBtn.innerHTML = '☀️';
+    }
+
+    // --- HISTORY FIX ---
+    try {
+        let saved = JSON.parse(localStorage.getItem('jewelChatHistory')) || [];
+        chatHistory = saved.map(msg => ({
+            role: msg.role === 'ai' ? 'assistant' : msg.role,
+            content: msg.content
+        }));
+    } catch(e) {
+        chatHistory = [];
+    }
+
+    function initChat() {
+        if (chatHistory.length === 0) {
+            addMessageToUI(WELCOME_MSG, 'ai');
+        } else {
+            chatHistory.forEach(msg => {
+                let uiSender = msg.role === 'assistant' ? 'ai' : 'user';
+                addMessageToUI(msg.content, uiSender);
+            });
+        }
+    }
+
+    function addMessageToUI(text, sender, isTyping = false) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `message-wrapper ${sender}`;
+        
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message';
+        
+        if (isTyping) {
+            msgDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+            wrapper.id = 'typing-indicator';
+        } else {
+            msgDiv.innerText = text;
+            wrapper.appendChild(msgDiv);
+
+            if (sender === 'ai') {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.innerHTML = '📋 Copy';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyBtn.innerHTML = '✅ Copied!';
+                        setTimeout(() => copyBtn.innerHTML = '📋 Copy', 2000);
+                    });
+                };
+                wrapper.appendChild(copyBtn);
+            }
+        }
+
+        chatBox.appendChild(wrapper);
+        
+        // Optimization: Smooth scroll
+        requestAnimationFrame(() => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        return wrapper;
+    }
+
+    function removeTypingIndicator() {
+        const el = document.getElementById('typing-indicator');
+        if (el) el.remove();
+    }
+
+    function clearChat() {
+        if(confirm("Sigurado ka bang gusto mong i-clear ang buong usapan niyo ni Jewel? 🥺")) {
+            chatHistory = [];
+            localStorage.removeItem('jewelChatHistory');
+            chatBox.innerHTML = '';
+            addMessageToUI(WELCOME_MSG, 'ai');
+        }
+    }
+
+    async function sendMessage() {
+        const userText = inputField.value.trim();
+        if (!userText || isTyping) return;
+
+        isTyping = true;
+        inputField.value = '';
+        inputField.disabled = true;
+        sendBtn.disabled = true;
+
+        addMessageToUI(userText, 'user');
+        chatHistory.push({ role: 'user', content: userText });
+        saveHistory();
+
+        const typingEl = addMessageToUI('', 'ai', true);
+
+        try {
+            const recentHistory = chatHistory.slice(-10);
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}` 
+                },
+                body: JSON.stringify({
+                    model: 'openai/gpt-oss-20b', 
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT },
+                        ...recentHistory
+                    ]
+                })
+            });
+
+            const data = await response.json();
+            removeTypingIndicator();
+
+            if (data.choices && data.choices[0].message.content) {
+                const aiReply = data.choices[0].message.content;
+                
+                chatHistory.push({ role: 'assistant', content: aiReply });
+                saveHistory();
+
+                addMessageToUI(aiReply, 'ai');
+
+            } else if (data.error) {
+                addMessageToUI("Aww, may error. 🥺 " + data.error.message, 'ai');
+                console.error(data.error);
+            } else {
+                addMessageToUI("Sorry, hindi ako makasagot ngayon. 🥺", 'ai');
+            }
+
+        } catch (error) {
+            removeTypingIndicator();
+            addMessageToUI("Naku, parang walang internet. Check mo raw. 🥺", 'ai');
+            console.error(error);
+        } finally {
+            isTyping = false;
+            inputField.disabled = false;
+            sendBtn.disabled = false;
+            inputField.focus();
+        }
+    }
+
+    function saveHistory() {
+        localStorage.setItem('jewelChatHistory', JSON.stringify(chatHistory));
+    }
+
+    inputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && !sendBtn.disabled) sendMessage();
+    });
+
+    initChat();
+</script>
+
+</body>
+</html>
