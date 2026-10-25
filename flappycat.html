@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flappy Cat: ULTIMATE EDITION</title>
+    <title>Flappy Cat: ULTIMATE EDITION (Optimized)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
@@ -29,12 +29,17 @@
             background: #000;
             overflow: hidden;
             box-shadow: 0 0 50px rgba(100, 255, 218, 0.2);
+            /* CSS Optimization para hindi mag-flicker */
+            transform: translateZ(0); 
+            will-change: transform;
         }
 
         canvas#gameCanvas {
             display: block;
             width: 100%;
             height: 100%;
+            /* CSS Optimization para sa canvas */
+            image-rendering: pixelated;
         }
 
         /* HUD */
@@ -58,14 +63,13 @@
             background: rgba(0,0,0,0.5); border: 2px solid; border-radius: 8px;
             padding: 5px 10px; font-size: 0.7rem; display: none;
         }
-        #shieldIcon { border-color: #00ffff; color: #00ffff; box-shadow: 0 0 10px #00ffff; }
-        #magnetIcon { border-color: #ff4500; color: #ff4500; box-shadow: 0 0 10px #ff4500; }
+        #shieldIcon { border-color: #00ffff; color: #00ffff; }
+        #magnetIcon { border-color: #ff4500; color: #ff4500; }
 
         #comboHUD {
             position: absolute; top: 80px; width: 100%; text-align: center;
             font-size: 1.5rem; color: #ffd700; text-shadow: 2px 2px 0 #000;
             z-index: 5; pointer-events: none; display: none;
-            transition: transform 0.1s;
         }
 
         #switchBtn {
@@ -73,54 +77,51 @@
             padding: 15px 25px; font-size: 0.8rem; border-radius: 12px;
             border: 3px solid #fff; background: rgba(0, 0, 0, 0.8); color: #fff;
             z-index: 5; cursor: pointer; transition: all 0.1s; display: none;
-            text-align: center; line-height: 1.5; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            text-align: center; line-height: 1.5;
         }
         #switchBtn:active { transform: translateX(-50%) scale(0.9); }
 
         .overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(5, 5, 10, 0.9); display: flex; flex-direction: column;
+            background: rgba(5, 5, 10, 0.95); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 10;
-            transition: opacity 0.3s; padding: 20px; text-align: center; backdrop-filter: blur(8px);
-            overflow-y: auto;
+            padding: 20px; text-align: center; overflow-y: auto;
         }
-        .overlay.hidden { opacity: 0; pointer-events: none; }
+        .overlay.hidden { display: none; }
 
-        h1 { font-size: 1.5rem; margin-bottom: 10px; line-height: 1.5; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 3px 3px 0 #000; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        p { font-size: 0.6rem; color: #64ffda; margin-bottom: 20px; line-height: 1.5; text-shadow: 0 0 5px #64ffda; }
+        h1 { font-size: 1.5rem; margin-bottom: 10px; line-height: 1.5; text-shadow: 3px 3px 0 #000; }
+        p { font-size: 0.6rem; color: #64ffda; margin-bottom: 20px; text-shadow: 1px 1px 0 #000; }
 
         .char-btn {
-            background: rgba(255, 255, 255, 0.05); border: 3px solid;
+            background: #222; border: 3px solid;
             border-radius: 15px; padding: 10px 20px; margin: 8px; width: 90%;
             display: flex; align-items: center; justify-content: flex-start; gap: 15px;
-            font-size: 0.8rem; color: #fff; cursor: pointer; transition: all 0.1s;
-            font-family: 'Press Start 2P', cursive; text-shadow: 2px 2px 0 #000;
-            position: relative; overflow: hidden;
+            font-size: 0.8rem; color: #fff; cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
         }
         .char-btn:active { transform: scale(0.95); }
-        .fire-btn { border-color: #ff4500; box-shadow: 0 0 15px rgba(255, 69, 0, 0.4) inset; }
-        .water-btn { border-color: #00bfff; box-shadow: 0 0 15px rgba(0, 191, 255, 0.4) inset; }
-        .shop-btn { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) inset; background: rgba(255, 215, 0, 0.1); justify-content: center; }
+        .fire-btn { border-color: #ff4500; }
+        .water-btn { border-color: #00bfff; }
+        .shop-btn { border-color: #ffd700; background: #332b00; justify-content: center; }
 
-        .preview-canvas { width: 70px; height: 70px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .preview-canvas { width: 70px; height: 70px; background: #000; border-radius: 10px; }
         .score-text { font-size: 1rem; margin-bottom: 10px; text-shadow: 2px 2px 0 #000; }
 
         .play-again-btn {
             background: #64ffda; color: #000; border: 4px solid #000;
             padding: 15px 25px; font-size: 0.9rem; border-radius: 10px;
             cursor: pointer; font-family: 'Press Start 2P', cursive;
-            box-shadow: 0 0 20px #64ffda, 4px 4px 0 #000; margin-top: 15px; transition: all 0.1s;
+            margin-top: 15px;
         }
-        .play-again-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 10px #64ffda; }
+        .play-again-btn:active { transform: translate(2px, 2px); }
 
         /* SHOP UI */
         #shopScreen { z-index: 20; justify-content: flex-start; padding-top: 40px; }
         .shop-header { display: flex; justify-content: space-between; width: 100%; padding: 0 20px; align-items: center; margin-bottom: 20px; }
-        .shop-coins { font-size: 1.2rem; color: #ffd700; text-shadow: 2px 2px 0 #000; }
+        .shop-coins { font-size: 1.2rem; color: #ffd700; }
         
         .shop-item {
-            background: rgba(255,255,255,0.05); border: 3px solid #333; border-radius: 15px;
+            background: #111; border: 3px solid #333; border-radius: 15px;
             padding: 10px; width: 90%; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: space-between;
         }
@@ -128,24 +129,22 @@
         .shop-item-title { font-size: 0.8rem; margin-bottom: 5px; }
         .shop-item-desc { font-size: 0.5rem; color: #888; }
         
-        .trail-preview { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 5px; }
+        .trail-preview { width: 40px; height: 40px; background: #000; border-radius: 5px; }
 
         .shop-item-action {
             padding: 10px 15px; font-size: 0.7rem; font-family: 'Press Start 2P', cursive;
-            border-radius: 8px; cursor: pointer; border: none; transition: all 0.1s;
+            border-radius: 8px; cursor: pointer; border: none;
             min-width: 90px;
         }
-        .buy-btn { background: #ffd700; color: #000; box-shadow: 0 3px 0 #b8860b; }
-        .buy-btn:active { transform: translateY(3px); box-shadow: none; }
-        .equip-btn { background: #64ffda; color: #000; box-shadow: 0 3px 0 #008080; }
-        .equip-btn:active { transform: translateY(3px); box-shadow: none; }
-        .equipped-btn { background: #555; color: #aaa; cursor: not-allowed; box-shadow: none; }
+        .buy-btn { background: #ffd700; color: #000; }
+        .equip-btn { background: #64ffda; color: #000; }
+        .equipped-btn { background: #555; color: #aaa; }
 
         .rarity-default { border-color: #888; }
-        .rarity-cute { border-color: #ff69b4; box-shadow: 0 0 10px rgba(255, 105, 180, 0.3); }
-        .rarity-cool { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
-        .rarity-epic { border-color: #a020f0; box-shadow: 0 0 10px rgba(160, 32, 240, 0.3); }
-        .rarity-legendary { border-color: #ff4500; box-shadow: 0 0 15px rgba(255, 69, 0, 0.5); background: rgba(255,69,0,0.1); }
+        .rarity-cute { border-color: #ff69b4; }
+        .rarity-cool { border-color: #00ffff; }
+        .rarity-epic { border-color: #a020f0; }
+        .rarity-legendary { border-color: #ff4500; }
 
         .back-btn {
             background: transparent; border: 2px solid #fff; color: #fff;
@@ -157,7 +156,7 @@
 <body>
 
 <div id="game-container">
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="400" height="800"></canvas>
     
     <div id="topHUD">
         <div id="coinHUD">🪙 <span id="coinCount">0</span></div>
@@ -173,7 +172,7 @@
     <!-- MAIN MENU -->
     <div class="overlay" id="startScreen">
         <h1 style="color:#ffd700;">FLAPPY<br>CAT</h1>
-        <p>ULTIMATE EDITION</p>
+        <p>TURBO EDITION</p>
         
         <button class="char-btn fire-btn" onclick="startGame('fire')">
             <canvas id="previewFire" width="100" height="100" class="preview-canvas"></canvas>
@@ -192,10 +191,10 @@
 
     <!-- GAME OVER -->
     <div class="overlay hidden" id="gameOverScreen">
-        <h1 style="color:#ff4444; text-shadow: 0 0 20px #ff0000;">GAME OVER</h1>
+        <h1 style="color:#ff4444;">GAME OVER</h1>
         <div class="score-text" id="finalScore" style="color:#fff;">SCORE: 0</div>
         <div class="score-text" id="finalCoins" style="color:#ffd700;">🪙 COINS: 0</div>
-        <div class="score-text" id="highScore" style="color:#ffd700; text-shadow: 0 0 10px #ffd700; margin-top:10px;">BEST: 0</div>
+        <div class="score-text" id="highScore" style="color:#ffd700; margin-top:10px;">BEST: 0</div>
         <button class="play-again-btn" onclick="showStartScreen()">PLAY AGAIN</button>
         <button class="back-btn" onclick="openShop()">🛒 GO TO SHOP</button>
     </div>
@@ -213,7 +212,9 @@
 
 <script>
     const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Alpha false = mas mabilis mag-render
+    
+    // UI Elements
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const shopScreen = document.getElementById('shopScreen');
@@ -226,29 +227,25 @@
     const shieldIcon = document.getElementById('shieldIcon');
     const magnetIcon = document.getElementById('magnetIcon');
 
-    canvas.width = 400;
-    canvas.height = 800;
-
+    // Game State
     let frames = 0;
     let score = 0;
     let coinCount = 0;
     let gameState = 'MENU'; 
     let charType = 'fire'; 
     let shakeTime = 0;
-    let flashColor = null;
-    
     let countdown = 3;
     let countdownTimer = 0;
 
-    // Combo & Powerup State
+    // Combo & Powerup
     let combo = 1;
     let comboTimer = 0;
     let hasShield = false;
     let hasMagnet = false;
     let magnetTimer = 0;
-    let invincibleTimer = 0; // Para sa shield break
+    let invincibleTimer = 0;
 
-    // --- PERSISTENT DATA ---
+    // Persistent Data
     let highScore = parseInt(localStorage.getItem('flappyCatBest')) || 0;
     let totalCoins = parseInt(localStorage.getItem('flappyCatCoins')) || 0;
     let ownedTrails = JSON.parse(localStorage.getItem('flappyCatOwnedTrails')) || ['default'];
@@ -257,16 +254,14 @@
     document.getElementById('highScore').innerText = 'BEST: ' + highScore;
     updateCoinUI();
 
-    // --- SHOP DATA ---
     const trails = {
-        'default': { name: 'ELEMENTAL', desc: 'Fire & Water', price: 0, class: 'rarity-default' },
-        'cute': { name: 'PINK HEARTS', desc: 'Cute & Sweet', price: 0, class: 'rarity-cute' },
-        'cool': { name: 'ICE SHARDS', desc: 'Cool & Sharp', price: 0, class: 'rarity-cool' },
-        'epic': { name: 'NEON VOID', desc: 'Epic & Mysterious', price: 0, class: 'rarity-epic' },
-        'legendary': { name: 'RAINBOW STAR', desc: 'Legendary Aura', price: 0, class: 'rarity-legendary' }
+        'default': { name: 'ELEMENTAL', desc: 'Circle', price: 0, class: 'rarity-default' },
+        'cute': { name: 'PINK HEARTS', desc: 'Heart', price: 0, class: 'rarity-cute' },
+        'cool': { name: 'ICE SHARDS', desc: 'Triangle', price: 0, class: 'rarity-cool' },
+        'epic': { name: 'NEON VOID', desc: 'Square', price: 0, class: 'rarity-epic' },
+        'legendary': { name: 'RAINBOW STAR', desc: 'Star', price: 0, class: 'rarity-legendary' }
     };
 
-    // --- MAP THEMES (May Weather na) ---
     const themes = [
         { bg: '#0a0a14', far: '#121226', near: '#1a1a35', weather: 'stars' },
         { bg: '#2b1055', far: '#4a1c6b', near: '#7b2cbf', weather: 'leaves' },
@@ -277,11 +272,7 @@
     let mapTransition = 0;
     let isTransitioningMap = false;
 
-    // --- PHYSICS TUNING ---
-    const cat = {
-        x: 80, y: 400, width: 50, height: 50,
-        gravity: 0.55, velocity: 0, jump: -10.5, rotation: 0
-    };
+    const cat = { x: 80, y: 400, width: 50, height: 50, gravity: 0.55, velocity: 0, jump: -10.5, rotation: 0 };
 
     const pipes = [];
     const coins = [];
@@ -300,10 +291,10 @@
     const bgHillsNear = [];
 
     for(let i=0; i<30; i++) bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
-    for(let i=0; i<canvas.width*2; i+=20) bgHillsFar.push({x: i, y: canvas.height - 150 + Math.sin(i*0.01)*60});
-    for(let i=0; i<canvas.width*2; i+=30) bgHillsNear.push({x: i, y: canvas.height - 80 + Math.cos(i*0.015)*40});
+    for(let i=0; i<canvas.width*2; i+=40) bgHillsFar.push({x: i, y: canvas.height - 150 + Math.sin(i*0.01)*60});
+    for(let i=0; i<canvas.width*2; i+=60) bgHillsNear.push({x: i, y: canvas.height - 80 + Math.cos(i*0.015)*40});
 
-    // --- AUDIO SYSTEM ---
+    // AUDIO
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx, musicInterval, currentTempo = 125;
     const BGM_VOL = 0.12, SFX_VOL = 0.3;
@@ -352,29 +343,25 @@
     }
     function stopBGM() { clearInterval(musicInterval); }
 
-    // --- UI FUNCTIONS ---
+    // UI FUNCTIONS
     function updateCoinUI() {
         coinCountEl.innerText = coinCount;
         shopCoinCountEl.innerText = totalCoins;
     }
 
     function openShop() {
-        startScreen.classList.add('hidden');
-        gameOverScreen.classList.add('hidden');
-        shopScreen.classList.remove('hidden');
+        startScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); shopScreen.classList.remove('hidden');
         renderShop();
     }
 
     function closeShop() {
-        shopScreen.classList.add('hidden');
-        showStartScreen();
+        shopScreen.classList.add('hidden'); showStartScreen();
     }
 
     function drawTrailPreview(canvasId, trailKey) {
         const c = document.getElementById(canvasId);
         const cx = c.getContext('2d');
         cx.clearRect(0, 0, c.width, c.height);
-        
         let color = '#fff', shape = 'circle';
         if (trailKey === 'cute') { color = '#ff69b4'; shape = 'heart'; }
         else if (trailKey === 'cool') { color = '#00ffff'; shape = 'triangle'; }
@@ -403,7 +390,6 @@
         for (const [key, item] of Object.entries(trails)) {
             let isOwned = ownedTrails.includes(key);
             let isEquipped = equippedTrail === key;
-            
             let btnHTML = isEquipped ? `<button class="shop-item-action equipped-btn">EQUIPPED</button>` :
                           isOwned ? `<button class="shop-item-action equip-btn" onclick="equipTrail('${key}')">EQUIP</button>` :
                           `<button class="shop-item-action buy-btn" onclick="buyTrail('${key}', ${item.price})">FREE</button>`;
@@ -414,9 +400,7 @@
                 <div class="shop-item-info">
                     <canvas id="preview-${key}" width="40" height="40" class="trail-preview"></canvas>
                     <div><div class="shop-item-title">${item.name}</div><div class="shop-item-desc">${item.desc}</div></div>
-                </div>
-                ${btnHTML}
-            `;
+                </div>${btnHTML}`;
             shopList.appendChild(itemDiv);
             drawTrailPreview(`preview-${key}`, key);
         }
@@ -433,17 +417,17 @@
         playSound('switch'); renderShop();
     }
 
-    // --- GAME MECHANICS ---
+    // GAME MECHANICS
     function resetGame() {
         frames = 0; score = 0; coinCount = 0; combo = 1; comboTimer = 0;
         cat.y = 400; cat.velocity = 0; cat.rotation = 0;
         pipes.length = 0; coins.length = 0; powerups.length = 0; particles.length = 0; scorePopups.length = 0; weatherParticles.length = 0;
-        gameSpeed = 4.8; pipeGap = 260; currentTempo = 125; shakeTime = 0; flashColor = null;
+        gameSpeed = 4.8; pipeGap = 260; currentTempo = 125; shakeTime = 0;
         currentThemeIndex = 0; isTransitioningMap = false; mapTransition = 0;
         hasShield = false; hasMagnet = false; magnetTimer = 0; invincibleTimer = 0;
         shieldIcon.style.display = 'none'; magnetIcon.style.display = 'none';
-        updateCoinUI();
         comboHUD.style.display = 'none';
+        updateCoinUI();
     }
 
     function startGame(type) {
@@ -451,7 +435,6 @@
         startScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); shopScreen.classList.add('hidden');
         switchBtn.style.display = 'block'; coinHUD.style.display = 'flex';
         updateSwitchBtnStyle();
-        
         gameState = 'COUNTDOWN'; countdown = 3; countdownTimer = 0;
         startBGM(); loop();
     }
@@ -464,34 +447,26 @@
     }
 
     function gameOverAction() {
-        if (invincibleTimer > 0) return; // I-fail kung naka-invincible
+        if (invincibleTimer > 0) return; 
 
         if (hasShield) {
-            // Basag ang shield imbes na mamatay
-            hasShield = false;
-            shieldIcon.style.display = 'none';
-            invincibleTimer = 60; // 1 segundo invincibility
-            shakeTime = 15;
+            hasShield = false; shieldIcon.style.display = 'none'; invincibleTimer = 60; shakeTime = 15;
             playSound('shield_break');
-            
-            // Particles para sa basag na shield
-            for(let i=0; i<20; i++) {
+            for(let i=0; i<10; i++) {
                 let angle = Math.random() * Math.PI * 2;
-                particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 8 + 3, life: 1, color: '#00ffff', vx: Math.cos(angle) * 8, vy: Math.sin(angle) * 8, shape: 'circle', angle: 0 });
+                particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 6 + 3, life: 1, color: '#00ffff', vx: Math.cos(angle) * 8, vy: Math.sin(angle) * 8, shape: 'circle', angle: 0 });
             }
-            return; // Wag muna i-game over
+            return; 
         }
 
-        gameState = 'GAMEOVER';
-        stopBGM(); playSound('hit'); shakeTime = 20; 
+        gameState = 'GAMEOVER'; stopBGM(); playSound('hit'); shakeTime = 20; 
         
-        for(let i=0; i<30; i++) {
+        for(let i=0; i<20; i++) {
             let angle = Math.random() * Math.PI * 2;
-            particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 12 + 5, life: 1, color: charType === 'fire' ? '#ff4500' : '#00bfff', vx: Math.cos(angle) * (Math.random() * 12 + 4), vy: Math.sin(angle) * (Math.random() * 12 + 4), shape: 'circle', angle: 0 });
+            particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 10 + 4, life: 1, color: charType === 'fire' ? '#ff4500' : '#00bfff', vx: Math.cos(angle) * (Math.random() * 12 + 4), vy: Math.sin(angle) * (Math.random() * 12 + 4), shape: 'circle', angle: 0 });
         }
 
         switchBtn.style.display = 'none'; coinHUD.style.display = 'none';
-        
         totalCoins += coinCount; localStorage.setItem('flappyCatCoins', totalCoins);
         if (score > highScore) { highScore = score; localStorage.setItem('flappyCatBest', highScore); }
         
@@ -505,23 +480,18 @@
     function jump() {
         if (gameState !== 'PLAYING') return;
         cat.velocity = cat.jump; playSound('jump');
-        
-        for (let i=0; i<5; i++) {
-            particles.push({ x: cat.x + 25, y: cat.y + 45, size: Math.random() * 8 + 3, life: 1, color: '#fff', vx: (Math.random() - 0.5) * 8, vy: Math.random() * 5 + 2, shape: 'circle', angle: 0 });
+        if(particles.length < 50) {
+            for (let i=0; i<3; i++) {
+                particles.push({ x: cat.x + 25, y: cat.y + 45, size: Math.random() * 6 + 2, life: 1, color: '#fff', vx: (Math.random() - 0.5) * 8, vy: Math.random() * 5 + 2, shape: 'circle', angle: 0 });
+            }
         }
     }
 
     function toggleElement() {
         if (gameState !== 'PLAYING') return;
         charType = charType === 'fire' ? 'water' : 'fire';
-        flashColor = charType === 'fire' ? 'rgba(255, 69, 0, 0.3)' : 'rgba(0, 191, 255, 0.3)';
-        setTimeout(() => { flashColor = null; }, 100);
-
-        for (let i=0; i<15; i++) {
-            let angle = Math.random() * Math.PI * 2;
-            particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 10 + 4, life: 1, color: charType === 'fire' ? '#ff4500' : '#00bfff', vx: Math.cos(angle) * (Math.random() * 10 + 2), vy: Math.sin(angle) * (Math.random() * 10 + 2), shape: 'circle', angle: 0 });
-        }
-        updateSwitchBtnStyle(); playSound('switch');
+        playSound('switch');
+        updateSwitchBtnStyle();
     }
 
     function updateSwitchBtnStyle() {
@@ -541,31 +511,20 @@
         if (e.code === 'KeyE') toggleElement();
     });
 
-    // --- DRAWING FUNCTIONS ---
+    // DRAWING FUNCTIONS (SIMPLIFIED FOR SPEED)
     function drawCat(targetCtx, cx, cy, type, velocity, scale = 1.0) {
         targetCtx.save();
         targetCtx.translate(cx, cy);
         targetCtx.scale(scale, scale);
-        let targetRot = Math.min(Math.PI/2, Math.max(-Math.PI/4, velocity * 0.04));
-        targetCtx.rotate(targetRot);
+        targetCtx.rotate(Math.min(Math.PI/2, Math.max(-Math.PI/4, velocity * 0.04)));
 
-        // Shield Bubble
         if (hasShield) {
-            targetCtx.beginPath();
-            targetCtx.arc(0, 0, 40, 0, Math.PI * 2);
-            targetCtx.strokeStyle = 'rgba(0, 255, 255, 0.8)';
-            targetCtx.lineWidth = 4;
-            targetCtx.stroke();
-            targetCtx.fillStyle = 'rgba(0, 255, 255, 0.2)';
-            targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(0, 0, 38, 0, Math.PI * 2);
+            targetCtx.strokeStyle = '#00ffff'; targetCtx.lineWidth = 3; targetCtx.stroke();
         }
+        if (invincibleTimer > 0 && Math.floor(frames / 5) % 2 === 0) targetCtx.globalAlpha = 0.4;
 
-        // Blinking effect kapag invincible
-        if (invincibleTimer > 0 && Math.floor(frames / 5) % 2 === 0) {
-            targetCtx.globalAlpha = 0.5;
-        }
-
-        targetCtx.shadowBlur = 10; targetCtx.shadowColor = type === 'fire' ? '#ff4500' : '#00bfff';
+        // WALANG shadowBlur para mabilis
         targetCtx.fillStyle = type === 'fire' ? '#ff7f50' : '#00ced1';
         
         targetCtx.beginPath(); targetCtx.ellipse(0, 0, 25, 22, 0, 0, Math.PI * 2); targetCtx.fill();
@@ -575,28 +534,20 @@
         targetCtx.fillStyle = type === 'fire' ? '#ffaa80' : '#80ffff';
         targetCtx.beginPath(); targetCtx.moveTo(-14, -13); targetCtx.lineTo(-18, -25); targetCtx.lineTo(-8, -18); targetCtx.fill();
         targetCtx.beginPath(); targetCtx.moveTo(14, -13); targetCtx.lineTo(18, -25); targetCtx.lineTo(8, -18); targetCtx.fill();
-        targetCtx.shadowBlur = 0;
 
-        // Blinking eyes logic
         let isBlinking = (frames % 200 < 10);
         targetCtx.fillStyle = '#fff';
         if (!isBlinking) {
             targetCtx.beginPath(); targetCtx.arc(-10, -5, 9, 0, Math.PI*2); targetCtx.fill();
             targetCtx.beginPath(); targetCtx.arc(10, -5, 9, 0, Math.PI*2); targetCtx.fill();
         } else {
-            targetCtx.fillRect(-15, -5, 10, 4);
-            targetCtx.fillRect(5, -5, 10, 4);
+            targetCtx.fillRect(-15, -5, 10, 4); targetCtx.fillRect(5, -5, 10, 4);
         }
         
         if (!isBlinking) {
-            let pupilSize = Math.min(7, 5 + (Math.abs(velocity) * 0.1));
             targetCtx.fillStyle = '#000';
-            targetCtx.beginPath(); targetCtx.arc(-8, -5, pupilSize, 0, Math.PI*2); targetCtx.fill();
-            targetCtx.beginPath(); targetCtx.arc(12, -5, pupilSize, 0, Math.PI*2); targetCtx.fill();
-
-            targetCtx.fillStyle = '#fff';
-            targetCtx.beginPath(); targetCtx.arc(-7, -7, 2, 0, Math.PI*2); targetCtx.fill();
-            targetCtx.beginPath(); targetCtx.arc(13, -7, 2, 0, Math.PI*2); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(-8, -5, 5, 0, Math.PI*2); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(12, -5, 5, 0, Math.PI*2); targetCtx.fill();
         }
 
         targetCtx.fillStyle = 'rgba(255, 105, 180, 0.6)';
@@ -616,7 +567,6 @@
             targetCtx.arc(-25, 10 + tailWag, 8, 0, Math.PI*2);
         }
         targetCtx.fill();
-        
         targetCtx.restore();
     }
 
@@ -635,74 +585,57 @@
     function drawCoins() {
         coins.forEach(coin => {
             ctx.save(); ctx.translate(coin.x, coin.y);
-            let scaleX = Math.cos(coin.angle);
-            ctx.scale(scaleX, 1);
-            ctx.fillStyle = '#ffd700';
-            ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#ffb300';
-            ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.beginPath(); ctx.arc(-4, -4, 3, 0, Math.PI*2); ctx.fill();
+            ctx.scale(Math.cos(coin.angle), 1);
+            ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ffb300'; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill();
             ctx.restore();
         });
     }
 
     function drawPowerups() {
         powerups.forEach(p => {
-            ctx.save(); ctx.translate(p.x, p.y);
-            ctx.rotate(p.angle);
-            ctx.shadowBlur = 15;
-            
-            if (p.type === 'shield') {
-                ctx.shadowColor = '#00ffff'; ctx.fillStyle = '#00ffff';
-                ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#000'; ctx.font = '20px Arial'; ctx.textAlign = 'center'; ctx.fillText('🛡️', 0, 7);
-            } else if (p.type === 'magnet') {
-                ctx.shadowColor = '#ff4500'; ctx.fillStyle = '#ff4500';
-                ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#000'; ctx.font = '20px Arial'; ctx.textAlign = 'center'; ctx.fillText('🧲', 0, 7);
-            }
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+            ctx.fillStyle = p.type === 'shield' ? '#00ffff' : '#ff4500';
+            ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#000'; ctx.font = '16px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(p.type === 'shield' ? '🛡️' : '🧲', 0, 0);
             ctx.restore();
         });
     }
 
     function drawPipes() {
+        // PINASIMPLE: Walang gradients, solid colors lang para 0 lag
         pipes.forEach(pipe => {
             let isGhost = (pipe.type === charType);
             ctx.globalAlpha = isGhost ? 0.3 : 1.0;
-            let colorTop, colorBot;
-            if (pipe.type === 'fire') { colorTop = '#ff4500'; colorBot = '#8b0000'; }
-            else if (pipe.type === 'water') { colorTop = '#00bfff'; colorBot = '#00008b'; }
-            else { colorTop = '#2ecc71'; colorBot = '#145a32'; }
+            
+            let cMain = '#2ecc71', cDark = '#145a32';
+            if (pipe.type === 'fire') { cMain = '#ff4500'; cDark = '#8b0000'; }
+            else if (pipe.type === 'water') { cMain = '#00bfff'; cDark = '#00008b'; }
 
-            let gradTop = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipeWidth, 0);
-            gradTop.addColorStop(0, colorBot); gradTop.addColorStop(0.2, colorTop); gradTop.addColorStop(0.8, colorTop); gradTop.addColorStop(1, colorBot);
-            ctx.fillStyle = gradTop;
+            ctx.fillStyle = cMain;
             ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
             ctx.fillRect(pipe.x - 5, pipe.topHeight - 25, pipeWidth + 10, 25);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
-            ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.topHeight);
-            ctx.strokeRect(pipe.x - 5, pipe.topHeight - 25, pipeWidth + 10, 25);
+            ctx.fillRect(pipe.x, pipe.topHeight + pipeGap, pipeWidth, canvas.height);
+            ctx.fillRect(pipe.x - 5, pipe.topHeight + pipeGap, pipeWidth + 10, 25);
 
-            let bottomY = pipe.topHeight + pipeGap;
-            let gradBot = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipeWidth, 0);
-            gradBot.addColorStop(0, colorBot); gradBot.addColorStop(0.2, colorTop); gradBot.addColorStop(0.8, colorTop); gradBot.addColorStop(1, colorBot);
-            ctx.fillStyle = gradBot;
-            ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
-            ctx.fillRect(pipe.x - 5, bottomY, pipeWidth + 10, 25);
-            ctx.strokeRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
-            ctx.strokeRect(pipe.x - 5, bottomY, pipeWidth + 10, 25);
+            // Shadows/Borders
+            ctx.fillStyle = cDark;
+            ctx.fillRect(pipe.x, pipe.topHeight - 5, pipeWidth, 5);
+            ctx.fillRect(pipe.x, pipe.topHeight + pipeGap, pipeWidth, 5);
+            
             ctx.globalAlpha = 1.0;
         });
     }
 
     function drawParticles() {
         particles.forEach((p) => {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.life;
+            
             ctx.save();
             ctx.translate(p.x, p.y);
             ctx.rotate(p.angle);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.life;
             
             if (p.shape === 'heart') {
                 let s = p.size * 1.2; 
@@ -725,15 +658,10 @@
 
     function drawWeather() {
         let theme = themes[currentThemeIndex];
-        
-        if (frames % 2 === 0) {
-            if (theme.weather === 'rain') {
-                weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 15, size: 2, color: '#00bfff'});
-            } else if (theme.weather === 'leaves') {
-                weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 2, size: Math.random()*4+2, color: '#ff8c00', angle: Math.random()*Math.PI});
-            } else if (theme.weather === 'meteors') {
-                if (Math.random() > 0.8) weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed, vy: 10, size: Math.random()*3+1, color: '#a020f0'});
-            }
+        if (frames % 3 === 0 && weatherParticles.length < 30) { // Limitahan ang weather particles
+            if (theme.weather === 'rain') weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 15, size: 2, color: '#00bfff'});
+            else if (theme.weather === 'leaves') weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 2, size: 4, color: '#ff8c00', angle: Math.random()*Math.PI});
+            else if (theme.weather === 'meteors' && Math.random() > 0.5) weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed, vy: 10, size: 3, color: '#a020f0'});
         }
 
         weatherParticles.forEach((wp, index) => {
@@ -741,13 +669,9 @@
             ctx.fillStyle = wp.color;
             ctx.globalAlpha = 0.6;
             
-            if (theme.weather === 'rain') {
-                ctx.fillRect(wp.x, wp.y, 2, 10);
-            } else if (theme.weather === 'leaves') {
-                ctx.save(); ctx.translate(wp.x, wp.y); ctx.rotate(frames*0.05); ctx.fillRect(-wp.size/2, -wp.size/2, wp.size, wp.size); ctx.restore();
-            } else {
-                ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size, 0, Math.PI*2); ctx.fill();
-            }
+            if (theme.weather === 'rain') ctx.fillRect(wp.x, wp.y, 2, 10);
+            else if (theme.weather === 'leaves') { ctx.save(); ctx.translate(wp.x, wp.y); ctx.rotate(frames*0.05); ctx.fillRect(-wp.size/2, -wp.size/2, wp.size, wp.size); ctx.restore(); }
+            else { ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size, 0, Math.PI*2); ctx.fill(); }
             
             ctx.globalAlpha = 1;
             if (wp.y > canvas.height) weatherParticles.splice(index, 1);
@@ -758,6 +682,7 @@
         let currentTheme = themes[currentThemeIndex];
         ctx.fillStyle = currentTheme.bg; ctx.fillRect(0,0,canvas.width, canvas.height);
         
+        // Simpleng Background Hills (Bawas lag)
         ctx.fillStyle = currentTheme.far;
         ctx.beginPath(); ctx.moveTo(0, canvas.height);
         bgHillsFar.forEach(pt => {
@@ -775,16 +700,12 @@
         ctx.lineTo(canvas.width, canvas.height); ctx.fill();
 
         drawWeather();
-
-        if (isTransitioningMap) {
-            ctx.fillStyle = `rgba(255, 255, 255, ${mapTransition})`;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            mapTransition -= 0.02;
-            if (mapTransition <= 0) { isTransitioningMap = false; mapTransition = 0; }
-        }
     }
 
-    // --- MAIN LOOP ---
+    // MAIN LOOP (Naka-frame limit para pantay-pantay sa lahat ng phone)
+    let lastTime = 0;
+    const fpsInterval = 1000 / 60; // 60 FPS Lock
+
     function update() {
         if (gameState === 'COUNTDOWN') {
             countdownTimer++;
@@ -797,28 +718,19 @@
         cat.velocity += cat.gravity;
         cat.y += cat.velocity;
 
-        // Combo Timer Logic
         if (combo > 1) {
             comboTimer--;
-            if (comboTimer <= 0) {
-                combo = 1;
-                comboHUD.style.display = 'none';
-            }
+            if (comboTimer <= 0) { combo = 1; comboHUD.style.display = 'none'; }
         }
 
         if (invincibleTimer > 0) invincibleTimer--;
-
-        // Powerup Timers
         if (hasMagnet) {
             magnetTimer--;
-            if (magnetTimer <= 0) {
-                hasMagnet = false;
-                magnetIcon.style.display = 'none';
-            }
+            if (magnetTimer <= 0) { hasMagnet = false; magnetIcon.style.display = 'none'; }
         }
 
-        // Trail Spawning
-        if (frames % 3 === 0) {
+        // Particle Spawns (Nilimitahan)
+        if (frames % 4 === 0 && particles.length < 60) {
             let pColor = '#fff', pSize = Math.random() * 8 + 6, pShape = 'circle', pAngle = 0;
             if (equippedTrail === 'cute') { pColor = Math.random() > 0.5 ? '#ff69b4' : '#ff1493'; pShape = 'heart'; }
             else if (equippedTrail === 'cool') { pColor = Math.random() > 0.5 ? '#00ffff' : '#1e90ff'; pShape = 'triangle'; }
@@ -831,7 +743,7 @@
 
         for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
-            p.x += p.vx; p.y += p.vy; p.life -= 0.03; p.size *= 0.97; p.angle += 0.05; 
+            p.x += p.vx; p.y += p.vy; p.life -= 0.04; p.size *= 0.96; p.angle += 0.05; 
             if (p.life <= 0) particles.splice(i, 1);
         }
 
@@ -840,118 +752,59 @@
             if (sp.life <= 0) scorePopups.splice(i, 1);
         }
 
-        // Spawn Pipes, Coins, Powerups
         if (frames % pipeSpawnRate === 0) {
             const topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 200)) + 100;
-            let type = 'normal'; let rand = Math.random();
+            let type = 'normal', rand = Math.random();
             if (rand > 0.65) type = 'fire'; else if (rand > 0.35) type = 'water';
             pipes.push({ x: canvas.width + 50, topHeight: topHeight, scored: false, type: type });
 
-            // Coin Spawn
-            if (Math.random() > 0.3) {
-                let coinY = topHeight + (pipeGap / 2);
-                coins.push({ x: canvas.width + 85, y: coinY, baseY: coinY, angle: Math.random() * Math.PI });
-            }
-            
-            // Powerup Spawn (Chance: 15%)
-            if (Math.random() > 0.85) {
-                let pType = Math.random() > 0.5 ? 'shield' : 'magnet';
-                let pY = topHeight + (pipeGap / 2) + (Math.random() > 0.5 ? 60 : -60);
-                powerups.push({ x: canvas.width + 120, y: pY, type: pType, angle: 0 });
-            }
+            if (Math.random() > 0.3) coins.push({ x: canvas.width + 85, y: topHeight + (pipeGap / 2), baseY: topHeight + (pipeGap / 2), angle: Math.random() * Math.PI });
+            if (Math.random() > 0.85) powerups.push({ x: canvas.width + 120, y: topHeight + (pipeGap / 2) + (Math.random() > 0.5 ? 60 : -60), type: Math.random() > 0.5 ? 'shield' : 'magnet', angle: 0 });
         }
 
-        // Update Powerups
         for (let i = powerups.length - 1; i >= 0; i--) {
-            let p = powerups[i];
-            p.x -= gameSpeed; p.angle += 0.05;
-            
-            let dx = (cat.x + cat.width/2) - p.x;
-            let dy = (cat.y + cat.height/2) - p.y;
+            let p = powerups[i]; p.x -= gameSpeed; p.angle += 0.05;
+            let dx = (cat.x + cat.width/2) - p.x, dy = (cat.y + cat.height/2) - p.y;
             if (Math.sqrt(dx*dx + dy*dy) < 40) {
                 if (p.type === 'shield') { hasShield = true; shieldIcon.style.display = 'block'; }
                 else if (p.type === 'magnet') { hasMagnet = true; magnetTimer = 300; magnetIcon.style.display = 'block'; }
-                
-                playSound('powerup');
-                powerups.splice(i, 1);
-                
-                // Burst particles
-                for(let k=0; k<10; k++) { particles.push({ x: p.x, y: p.y, size: Math.random()*5+2, life: 1, color: p.type==='shield'?'#00ffff':'#ff4500', vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, shape: 'circle', angle: 0 }); }
-            } else if (p.x < -50) {
-                powerups.splice(i, 1);
-            }
+                playSound('powerup'); powerups.splice(i, 1);
+            } else if (p.x < -50) powerups.splice(i, 1);
         }
 
-        // Update Coins
         for (let i = coins.length - 1; i >= 0; i--) {
-            let coin = coins[i];
-            coin.x -= gameSpeed; coin.angle += 0.1; coin.y = coin.baseY + Math.sin(coin.angle) * 15;
+            let coin = coins[i]; coin.x -= gameSpeed; coin.angle += 0.1; coin.y = coin.baseY + Math.sin(coin.angle) * 15;
             
-            // Magnet Effect
             if (hasMagnet) {
-                let dx = (cat.x + cat.width/2) - coin.x;
-                let dy = (cat.y + cat.height/2) - coin.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 250) {
-                    coin.x += (dx / dist) * 12;
-                    coin.y += (dy / dist) * 12;
-                    coin.baseY = coin.y; // Update base so it doesn't snap back instantly
-                }
+                let dx = (cat.x + cat.width/2) - coin.x, dy = (cat.y + cat.height/2) - coin.y, dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 250) { coin.x += (dx / dist) * 12; coin.y += (dy / dist) * 12; coin.baseY = coin.y; }
             }
 
-            let dx = (cat.x + cat.width/2) - coin.x;
-            let dy = (cat.y + cat.height/2) - coin.y;
+            let dx = (cat.x + cat.width/2) - coin.x, dy = (cat.y + cat.height/2) - coin.y;
             if (Math.sqrt(dx*dx + dy*dy) < 35) {
                 coins.splice(i, 1); coinCount++; updateCoinUI(); playSound('coin');
-                
-                // Combo Logic
-                combo++; comboTimer = 180; // 3 seconds (60fps * 3)
-                comboHUD.innerText = `x${combo}`;
-                comboHUD.style.display = 'block';
-                comboHUD.style.transform = 'scale(1.3)';
-                setTimeout(() => comboHUD.style.transform = 'scale(1)', 100);
-
-                let gainedScore = 1 * combo;
-                score += gainedScore;
-                scorePopups.push({x: coin.x, y: coin.y, text: `+${gainedScore}🪙`, color: '#ffd700', life: 1});
-                
-                for(let p=0; p<5; p++) { particles.push({ x: coin.x, y: coin.y, size: Math.random() * 6 + 3, life: 1, color: '#ffd700', vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, shape: 'circle', angle: 0 }); }
-            } else if (coin.x < -50) { coins.splice(i, 1); }
+                combo++; comboTimer = 180;
+                comboHUD.innerText = `x${combo}`; comboHUD.style.display = 'block';
+                score += 1 * combo; scorePopups.push({x: coin.x, y: coin.y, text: `+${1*combo}🪙`, color: '#ffd700', life: 1});
+            } else if (coin.x < -50) coins.splice(i, 1);
         }
 
-        // Update Pipes & Collision
         pipes.forEach((pipe, index) => {
             pipe.x -= gameSpeed;
             if (pipe.type !== charType) {
                 let catBox = { x: cat.x + 12, y: cat.y + 12, w: cat.width - 24, h: cat.height - 24 };
-                if (catBox.x < pipe.x + pipeWidth && catBox.x + catBox.w > pipe.x && (catBox.y < pipe.topHeight || catBox.y + catBox.h > pipe.topHeight + pipeGap)) {
-                    gameOverAction();
-                }
+                if (catBox.x < pipe.x + pipeWidth && catBox.x + catBox.w > pipe.x && (catBox.y < pipe.topHeight || catBox.y + catBox.h > pipe.topHeight + pipeGap)) gameOverAction();
             }
 
             if (pipe.x + pipeWidth < cat.x && !pipe.scored) {
-                pipe.scored = true; 
-                playSound('score');
-                
-                // Combo Logic (Passing pipe)
-                combo++; comboTimer = 180;
-                comboHUD.innerText = `x${combo}`;
-                comboHUD.style.display = 'block';
-                comboHUD.style.transform = 'scale(1.3)';
-                setTimeout(() => comboHUD.style.transform = 'scale(1)', 100);
-
-                let gainedScore = 1 * combo;
-                score += gainedScore;
-                
-                scorePopups.push({x: cat.x + 20, y: cat.y, text: `+${gainedScore}`, color: '#fff', life: 1});
-                
+                pipe.scored = true; playSound('score');
+                combo++; comboTimer = 180; comboHUD.innerText = `x${combo}`; comboHUD.style.display = 'block';
+                score += 1 * combo; scorePopups.push({x: cat.x + 20, y: cat.y, text: `+${1*combo}`, color: '#fff', life: 1});
                 gameSpeed = Math.min(maxGameSpeed, gameSpeed + 0.04);
                 currentTempo = Math.max(80, currentTempo - 0.5);
-                if (pipeGap > 180 && score % 5 === 0) pipeGap -= 2; // Lumiliit gap kada 5 score
-
+                if (pipeGap > 180 && score % 5 === 0) pipeGap -= 2; 
                 if (score > 0 && score % 30 === 0 && currentThemeIndex < themes.length - 1) {
-                    currentThemeIndex++; isTransitioningMap = true; mapTransition = 1; playSound('switch');
-                    weatherParticles.length = 0; // Reset weather
+                    currentThemeIndex++; weatherParticles.length = 0;
                 }
             }
             if (pipe.x + pipeWidth < -50) pipes.splice(index, 1);
@@ -964,46 +817,47 @@
         ctx.save();
         if (shakeTime > 0) { let dx = (Math.random() - 0.5) * 15; let dy = (Math.random() - 0.5) * 15; ctx.translate(dx, dy); shakeTime--; }
 
-        drawBackground(); 
-        drawPipes(); 
-        drawCoins(); 
-        drawPowerups();
-        drawParticles();
+        drawBackground(); drawPipes(); drawCoins(); drawPowerups(); drawParticles();
         
         if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
-            let bobY = Math.sin(frames * 0.1) * 3; // Idle animation
-            drawCat(ctx, cat.x + cat.width/2, cat.y + cat.height/2 + bobY, charType, cat.velocity);
+            drawCat(ctx, cat.x + cat.width/2, cat.y + cat.height/2 + Math.sin(frames * 0.1) * 3, charType, cat.velocity);
         }
         
         scorePopups.forEach(sp => {
             ctx.fillStyle = sp.color; ctx.globalAlpha = sp.life;
-            ctx.font = '20px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.font = '16px "Press Start 2P", cursive'; ctx.textAlign = 'center';
             ctx.fillText(sp.text, sp.x, sp.y); ctx.globalAlpha = 1;
         });
 
-        if (flashColor) { ctx.fillStyle = flashColor; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-
         if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
-            ctx.fillStyle = '#fff'; ctx.font = '35px "Press Start 2P", cursive'; ctx.textAlign = 'center';
-            ctx.shadowBlur = 10; ctx.shadowColor = '#000'; ctx.fillText(score, canvas.width / 2, 90); ctx.shadowBlur = 0;
+            ctx.fillStyle = '#fff'; ctx.font = '30px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.fillText(score, canvas.width / 2, 80);
         }
 
         if (gameState === 'COUNTDOWN') {
-            ctx.fillStyle = '#ffd700'; ctx.font = '70px "Press Start 2P", cursive'; ctx.textAlign = 'center';
-            ctx.shadowBlur = 20; ctx.shadowColor = '#ff4500';
-            let displayTxt = countdown > 0 ? countdown : "FLY!";
-            ctx.fillText(displayTxt, canvas.width / 2, canvas.height / 2); ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ffd700'; ctx.font = '60px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.fillText(countdown > 0 ? countdown : "FLY!", canvas.width / 2, canvas.height / 2);
         }
         ctx.restore();
     }
 
-    function loop() {
-        update(); draw();
-        if (gameState !== 'MENU' && gameState !== 'GAMEOVER' && gameState !== 'SHOP') requestAnimationFrame(loop);
+    // ETO ANG NAGPIPIGIL SA LAG (Fixed Timestep)
+    function loop(time) {
+        requestAnimationFrame(loop);
+        
+        if (gameState === 'MENU' || gameState === 'GAMEOVER' || gameState === 'SHOP') return;
+        
+        const elapsed = time - lastTime;
+        if (elapsed > fpsInterval) {
+            lastTime = time - (elapsed % fpsInterval);
+            update(); 
+            draw();
+        }
     }
 
     renderPreviews();
     draw();
+    requestAnimationFrame(loop);
 </script>
 </body>
 </html>
