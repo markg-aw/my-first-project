@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Cat: ULTIMATE EDITION</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; touch-action: none; }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #050508;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 850px;
+            background: #000;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(100, 255, 218, 0.2);
+        }
+
+        canvas#gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* HUD */
+        #topHUD {
+            position: absolute; top: 10px; width: 100%; padding: 0 15px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            z-index: 5; pointer-events: none;
+        }
+        
+        #coinHUD {
+            font-size: 1.2rem; color: #ffd700;
+            text-shadow: 2px 2px 0 #000;
+            display: flex; align-items: center; gap: 10px;
+            display: none; 
+        }
+
+        #powerupHUD {
+            display: flex; flex-direction: column; gap: 5px; align-items: flex-end;
+        }
+        .active-powerup {
+            background: rgba(0,0,0,0.5); border: 2px solid; border-radius: 8px;
+            padding: 5px 10px; font-size: 0.7rem; display: none;
+        }
+        #shieldIcon { border-color: #00ffff; color: #00ffff; box-shadow: 0 0 10px #00ffff; }
+        #magnetIcon { border-color: #ff4500; color: #ff4500; box-shadow: 0 0 10px #ff4500; }
+
+        #comboHUD {
+            position: absolute; top: 80px; width: 100%; text-align: center;
+            font-size: 1.5rem; color: #ffd700; text-shadow: 2px 2px 0 #000;
+            z-index: 5; pointer-events: none; display: none;
+            transition: transform 0.1s;
+        }
+
+        #switchBtn {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            padding: 15px 25px; font-size: 0.8rem; border-radius: 12px;
+            border: 3px solid #fff; background: rgba(0, 0, 0, 0.8); color: #fff;
+            z-index: 5; cursor: pointer; transition: all 0.1s; display: none;
+            text-align: center; line-height: 1.5; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        #switchBtn:active { transform: translateX(-50%) scale(0.9); }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(5, 5, 10, 0.9); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10;
+            transition: opacity 0.3s; padding: 20px; text-align: center; backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+        .overlay.hidden { opacity: 0; pointer-events: none; }
+
+        h1 { font-size: 1.5rem; margin-bottom: 10px; line-height: 1.5; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 3px 3px 0 #000; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        p { font-size: 0.6rem; color: #64ffda; margin-bottom: 20px; line-height: 1.5; text-shadow: 0 0 5px #64ffda; }
+
+        .char-btn {
+            background: rgba(255, 255, 255, 0.05); border: 3px solid;
+            border-radius: 15px; padding: 10px 20px; margin: 8px; width: 90%;
+            display: flex; align-items: center; justify-content: flex-start; gap: 15px;
+            font-size: 0.8rem; color: #fff; cursor: pointer; transition: all 0.1s;
+            font-family: 'Press Start 2P', cursive; text-shadow: 2px 2px 0 #000;
+            position: relative; overflow: hidden;
+        }
+        .char-btn:active { transform: scale(0.95); }
+        .fire-btn { border-color: #ff4500; box-shadow: 0 0 15px rgba(255, 69, 0, 0.4) inset; }
+        .water-btn { border-color: #00bfff; box-shadow: 0 0 15px rgba(0, 191, 255, 0.4) inset; }
+        .shop-btn { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) inset; background: rgba(255, 215, 0, 0.1); justify-content: center; }
+
+        .preview-canvas { width: 70px; height: 70px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .score-text { font-size: 1rem; margin-bottom: 10px; text-shadow: 2px 2px 0 #000; }
+
+        .play-again-btn {
+            background: #64ffda; color: #000; border: 4px solid #000;
+            padding: 15px 25px; font-size: 0.9rem; border-radius: 10px;
+            cursor: pointer; font-family: 'Press Start 2P', cursive;
+            box-shadow: 0 0 20px #64ffda, 4px 4px 0 #000; margin-top: 15px; transition: all 0.1s;
+        }
+        .play-again-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 10px #64ffda; }
+
+        /* SHOP UI */
+        #shopScreen { z-index: 20; justify-content: flex-start; padding-top: 40px; }
+        .shop-header { display: flex; justify-content: space-between; width: 100%; padding: 0 20px; align-items: center; margin-bottom: 20px; }
+        .shop-coins { font-size: 1.2rem; color: #ffd700; text-shadow: 2px 2px 0 #000; }
+        
+        .shop-item {
+            background: rgba(255,255,255,0.05); border: 3px solid #333; border-radius: 15px;
+            padding: 10px; width: 90%; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .shop-item-info { text-align: left; display: flex; align-items: center; gap: 10px; }
+        .shop-item-title { font-size: 0.8rem; margin-bottom: 5px; }
+        .shop-item-desc { font-size: 0.5rem; color: #888; }
+        
+        .trail-preview { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 5px; }
+
+        .shop-item-action {
+            padding: 10px 15px; font-size: 0.7rem; font-family: 'Press Start 2P', cursive;
+            border-radius: 8px; cursor: pointer; border: none; transition: all 0.1s;
+            min-width: 90px;
+        }
+        .buy-btn { background: #ffd700; color: #000; box-shadow: 0 3px 0 #b8860b; }
+        .buy-btn:active { transform: translateY(3px); box-shadow: none; }
+        .equip-btn { background: #64ffda; color: #000; box-shadow: 0 3px 0 #008080; }
+        .equip-btn:active { transform: translateY(3px); box-shadow: none; }
+        .equipped-btn { background: #555; color: #aaa; cursor: not-allowed; box-shadow: none; }
+
+        .rarity-default { border-color: #888; }
+        .rarity-cute { border-color: #ff69b4; box-shadow: 0 0 10px rgba(255, 105, 180, 0.3); }
+        .rarity-cool { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+        .rarity-epic { border-color: #a020f0; box-shadow: 0 0 10px rgba(160, 32, 240, 0.3); }
+        .rarity-legendary { border-color: #ff4500; box-shadow: 0 0 15px rgba(255, 69, 0, 0.5); background: rgba(255,69,0,0.1); }
+
+        .back-btn {
+            background: transparent; border: 2px solid #fff; color: #fff;
+            padding: 10px 15px; font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem; border-radius: 8px; cursor: pointer; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="topHUD">
+        <div id="coinHUD">🪙 <span id="coinCount">0</span></div>
+        <div id="powerupHUD">
+            <div class="active-powerup" id="shieldIcon">🛡️ SHIELD</div>
+            <div class="active-powerup" id="magnetIcon">🧲 MAGNET</div>
+        </div>
+    </div>
+    <div id="comboHUD">x1</div>
+    
+    <button id="switchBtn" onclick="toggleElement()">SWITCH ELEMENT</button>
+
+    <!-- MAIN MENU -->
+    <div class="overlay" id="startScreen">
+        <h1 style="color:#ffd700;">FLAPPY<br>CAT</h1>
+        <p>ULTIMATE EDITION</p>
+        
+        <button class="char-btn fire-btn" onclick="startGame('fire')">
+            <canvas id="previewFire" width="100" height="100" class="preview-canvas"></canvas>
+            <span>FIRE CAT</span>
+        </button>
+        
+        <button class="char-btn water-btn" onclick="startGame('water')">
+            <canvas id="previewWater" width="100" height="100" class="preview-canvas"></canvas>
+            <span>WATER CAT</span>
+        </button>
+
+        <button class="char-btn shop-btn" onclick="openShop()">
+            🛒 GO TO SHOP
+        </button>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="overlay hidden" id="gameOverScreen">
+        <h1 style="color:#ff4444; text-shadow: 0 0 20px #ff0000;">GAME OVER</h1>
+        <div class="score-text" id="finalScore" style="color:#fff;">SCORE: 0</div>
+        <div class="score-text" id="finalCoins" style="color:#ffd700;">🪙 COINS: 0</div>
+        <div class="score-text" id="highScore" style="color:#ffd700; text-shadow: 0 0 10px #ffd700; margin-top:10px;">BEST: 0</div>
+        <button class="play-again-btn" onclick="showStartScreen()">PLAY AGAIN</button>
+        <button class="back-btn" onclick="openShop()">🛒 GO TO SHOP</button>
+    </div>
+
+    <!-- SHOP SCREEN -->
+    <div class="overlay hidden" id="shopScreen">
+        <div class="shop-header">
+            <h1 style="color:#64ffda; font-size: 1rem; margin:0;">SHOP</h1>
+            <div class="shop-coins">🪙 <span id="shopCoinCount">0</span></div>
+        </div>
+        <div id="shopList" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+        <button class="back-btn" onclick="closeShop()">BACK</button>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const shopScreen = document.getElementById('shopScreen');
+    const switchBtn = document.getElementById('switchBtn');
+    const coinHUD = document.getElementById('coinHUD');
+    const coinCountEl = document.getElementById('coinCount');
+    const shopCoinCountEl = document.getElementById('shopCoinCount');
+    const shopList = document.getElementById('shopList');
+    const comboHUD = document.getElementById('comboHUD');
+    const shieldIcon = document.getElementById('shieldIcon');
+    const magnetIcon = document.getElementById('magnetIcon');
+
+    canvas.width = 400;
+    canvas.height = 800;
+
+    let frames = 0;
+    let score = 0;
+    let coinCount = 0;
+    let gameState = 'MENU'; 
+    let charType = 'fire'; 
+    let shakeTime = 0;
+    let flashColor = null;
+    
+    let countdown = 3;
+    let countdownTimer = 0;
+
+    // Combo & Powerup State
+    let combo = 1;
+    let comboTimer = 0;
+    let hasShield = false;
+    let hasMagnet = false;
+    let magnetTimer = 0;
+    let invincibleTimer = 0; // Para sa shield break
+
+    // --- PERSISTENT DATA ---
+    let highScore = parseInt(localStorage.getItem('flappyCatBest')) || 0;
+    let totalCoins = parseInt(localStorage.getItem('flappyCatCoins')) || 0;
+    let ownedTrails = JSON.parse(localStorage.getItem('flappyCatOwnedTrails')) || ['default'];
+    let equippedTrail = localStorage.getItem('flappyCatEquippedTrail') || 'default';
+
+    document.getElementById('highScore').innerText = 'BEST: ' + highScore;
+    updateCoinUI();
+
+    // --- SHOP DATA ---
+    const trails = {
+        'default': { name: 'ELEMENTAL', desc: 'Fire & Water', price: 0, class: 'rarity-default' },
+        'cute': { name: 'PINK HEARTS', desc: 'Cute & Sweet', price: 0, class: 'rarity-cute' },
+        'cool': { name: 'ICE SHARDS', desc: 'Cool & Sharp', price: 0, class: 'rarity-cool' },
+        'epic': { name: 'NEON VOID', desc: 'Epic & Mysterious', price: 0, class: 'rarity-epic' },
+        'legendary': { name: 'RAINBOW STAR', desc: 'Legendary Aura', price: 0, class: 'rarity-legendary' }
+    };
+
+    // --- MAP THEMES (May Weather na) ---
+    const themes = [
+        { bg: '#0a0a14', far: '#121226', near: '#1a1a35', weather: 'stars' },
+        { bg: '#2b1055', far: '#4a1c6b', near: '#7b2cbf', weather: 'leaves' },
+        { bg: '#0b1a14', far: '#143324', near: '#1d4d35', weather: 'rain' },
+        { bg: '#000000', far: '#1a0033', near: '#330066', weather: 'meteors' }
+    ];
+    let currentThemeIndex = 0;
+    let mapTransition = 0;
+    let isTransitioningMap = false;
+
+    // --- PHYSICS TUNING ---
+    const cat = {
+        x: 80, y: 400, width: 50, height: 50,
+        gravity: 0.55, velocity: 0, jump: -10.5, rotation: 0
+    };
+
+    const pipes = [];
+    const coins = [];
+    const powerups = [];
+    const weatherParticles = [];
+    const pipeWidth = 70;
+    let pipeGap = 260; 
+    let gameSpeed = 4.8; 
+    const maxGameSpeed = 12;
+    let pipeSpawnRate = 105; 
+
+    const particles = [];
+    const scorePopups = [];
+    const bgStars = [];
+    const bgHillsFar = [];
+    const bgHillsNear = [];
+
+    for(let i=0; i<30; i++) bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
+    for(let i=0; i<canvas.width*2; i+=20) bgHillsFar.push({x: i, y: canvas.height - 150 + Math.sin(i*0.01)*60});
+    for(let i=0; i<canvas.width*2; i+=30) bgHillsNear.push({x: i, y: canvas.height - 80 + Math.cos(i*0.015)*40});
+
+    // --- AUDIO SYSTEM ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx, musicInterval, currentTempo = 125;
+    const BGM_VOL = 0.12, SFX_VOL = 0.3;
+
+    function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
+    function playSound(type) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        
+        if (type === 'jump') { osc.type = 'sine'; osc.frequency.setValueAtTime(500, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
+        else if (type === 'score') { osc.type = 'square'; osc.frequency.setValueAtTime(1000, audioCtx.currentTime); osc.frequency.setValueAtTime(1500, audioCtx.currentTime + 0.05); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
+        else if (type === 'coin') { osc.type = 'sine'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime); osc.frequency.setValueAtTime(1600, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); osc.start(); osc.stop(audioCtx.currentTime + 0.2); }
+        else if (type === 'hit') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(SFX_VOL * 2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5); osc.start(); osc.stop(audioCtx.currentTime + 0.5); }
+        else if (type === 'switch') { osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
+        else if (type === 'buy') { osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.2); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); osc.start(); osc.stop(audioCtx.currentTime + 0.3); }
+        else if (type === 'powerup') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.3); gain.gain.setValueAtTime(SFX_VOL, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4); osc.start(); osc.stop(audioCtx.currentTime + 0.4); }
+        else if (type === 'shield_break') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.4); gain.gain.setValueAtTime(SFX_VOL * 1.5, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4); osc.start(); osc.stop(audioCtx.currentTime + 0.4); }
+    }
+
+    function startBGM() {
+        if (!audioCtx) return;
+        clearInterval(musicInterval);
+        const melody = [523, 659, 784, 1046, 784, 659, 523, 392]; 
+        let step = 0;
+        
+        musicInterval = setInterval(() => {
+            if (gameState !== 'PLAYING') return;
+            let time = audioCtx.currentTime;
+            
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'square'; osc.frequency.setValueAtTime(melody[step % melody.length], time);
+            gain.gain.setValueAtTime(BGM_VOL, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+            osc.start(time); osc.stop(time + 0.08);
+            
+            if (step % 2 === 0) {
+                const bassOsc = audioCtx.createOscillator(); const bassGain = audioCtx.createGain();
+                bassOsc.connect(bassGain); bassGain.connect(audioCtx.destination);
+                bassOsc.type = 'sawtooth'; bassOsc.frequency.setValueAtTime(step % 4 === 0 ? 130 : 98, time);
+                bassGain.gain.setValueAtTime(BGM_VOL * 1.5, time); bassGain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+                bassOsc.start(time); bassOsc.stop(time + 0.15);
+            }
+            step++;
+        }, currentTempo);
+    }
+    function stopBGM() { clearInterval(musicInterval); }
+
+    // --- UI FUNCTIONS ---
+    function updateCoinUI() {
+        coinCountEl.innerText = coinCount;
+        shopCoinCountEl.innerText = totalCoins;
+    }
+
+    function openShop() {
+        startScreen.classList.add('hidden');
+        gameOverScreen.classList.add('hidden');
+        shopScreen.classList.remove('hidden');
+        renderShop();
+    }
+
+    function closeShop() {
+        shopScreen.classList.add('hidden');
+        showStartScreen();
+    }
+
+    function drawTrailPreview(canvasId, trailKey) {
+        const c = document.getElementById(canvasId);
+        const cx = c.getContext('2d');
+        cx.clearRect(0, 0, c.width, c.height);
+        
+        let color = '#fff', shape = 'circle';
+        if (trailKey === 'cute') { color = '#ff69b4'; shape = 'heart'; }
+        else if (trailKey === 'cool') { color = '#00ffff'; shape = 'triangle'; }
+        else if (trailKey === 'epic') { color = '#a020f0'; shape = 'square'; }
+        else if (trailKey === 'legendary') { color = '#ffd700'; shape = 'star'; }
+        else { color = '#ff4500'; shape = 'circle'; }
+
+        cx.fillStyle = color;
+        cx.translate(c.width/2, c.height/2);
+        
+        if (shape === 'heart') {
+            cx.beginPath(); cx.moveTo(0, 5); cx.bezierCurveTo(0, 0, -12, 0, -12, 8); cx.bezierCurveTo(-12, 15, 0, 20, 0, 25); cx.bezierCurveTo(0, 20, 12, 15, 12, 8); cx.bezierCurveTo(12, 0, 0, 0, 0, 5); cx.fill();
+        } else if (shape === 'triangle') {
+            cx.beginPath(); cx.moveTo(0, -15); cx.lineTo(12, 10); cx.lineTo(-12, 10); cx.closePath(); cx.fill();
+        } else if (shape === 'square') {
+            cx.fillRect(-10, -10, 20, 20);
+        } else if (shape === 'star') {
+            cx.beginPath(); for (let i = 0; i < 5; i++) { cx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * 15, -Math.sin((18 + i * 72) / 180 * Math.PI) * 15); cx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * 7.5, -Math.sin((54 + i * 72) / 180 * Math.PI) * 7.5); } cx.closePath(); cx.fill();
+        } else {
+            cx.beginPath(); cx.arc(0, 0, 15, 0, Math.PI * 2); cx.fill();
+        }
+    }
+
+    function renderShop() {
+        shopList.innerHTML = '';
+        for (const [key, item] of Object.entries(trails)) {
+            let isOwned = ownedTrails.includes(key);
+            let isEquipped = equippedTrail === key;
+            
+            let btnHTML = isEquipped ? `<button class="shop-item-action equipped-btn">EQUIPPED</button>` :
+                          isOwned ? `<button class="shop-item-action equip-btn" onclick="equipTrail('${key}')">EQUIP</button>` :
+                          `<button class="shop-item-action buy-btn" onclick="buyTrail('${key}', ${item.price})">FREE</button>`;
+
+            let itemDiv = document.createElement('div');
+            itemDiv.className = `shop-item ${item.class}`;
+            itemDiv.innerHTML = `
+                <div class="shop-item-info">
+                    <canvas id="preview-${key}" width="40" height="40" class="trail-preview"></canvas>
+                    <div><div class="shop-item-title">${item.name}</div><div class="shop-item-desc">${item.desc}</div></div>
+                </div>
+                ${btnHTML}
+            `;
+            shopList.appendChild(itemDiv);
+            drawTrailPreview(`preview-${key}`, key);
+        }
+    }
+
+    function buyTrail(key, price) {
+        totalCoins -= price; ownedTrails.push(key); equippedTrail = key; 
+        localStorage.setItem('flappyCatCoins', totalCoins); localStorage.setItem('flappyCatOwnedTrails', JSON.stringify(ownedTrails)); localStorage.setItem('flappyCatEquippedTrail', equippedTrail);
+        playSound('buy'); updateCoinUI(); renderShop();
+    }
+
+    function equipTrail(key) {
+        equippedTrail = key; localStorage.setItem('flappyCatEquippedTrail', equippedTrail);
+        playSound('switch'); renderShop();
+    }
+
+    // --- GAME MECHANICS ---
+    function resetGame() {
+        frames = 0; score = 0; coinCount = 0; combo = 1; comboTimer = 0;
+        cat.y = 400; cat.velocity = 0; cat.rotation = 0;
+        pipes.length = 0; coins.length = 0; powerups.length = 0; particles.length = 0; scorePopups.length = 0; weatherParticles.length = 0;
+        gameSpeed = 4.8; pipeGap = 260; currentTempo = 125; shakeTime = 0; flashColor = null;
+        currentThemeIndex = 0; isTransitioningMap = false; mapTransition = 0;
+        hasShield = false; hasMagnet = false; magnetTimer = 0; invincibleTimer = 0;
+        shieldIcon.style.display = 'none'; magnetIcon.style.display = 'none';
+        updateCoinUI();
+        comboHUD.style.display = 'none';
+    }
+
+    function startGame(type) {
+        initAudio(); charType = type; resetGame();
+        startScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); shopScreen.classList.add('hidden');
+        switchBtn.style.display = 'block'; coinHUD.style.display = 'flex';
+        updateSwitchBtnStyle();
+        
+        gameState = 'COUNTDOWN'; countdown = 3; countdownTimer = 0;
+        startBGM(); loop();
+    }
+
+    function showStartScreen() {
+        gameState = 'MENU'; stopBGM(); switchBtn.style.display = 'none'; coinHUD.style.display = 'none';
+        startScreen.classList.remove('hidden'); gameOverScreen.classList.add('hidden'); shopScreen.classList.add('hidden');
+        document.getElementById('highScore').innerText = 'BEST: ' + highScore;
+        renderPreviews(); draw(); 
+    }
+
+    function gameOverAction() {
+        if (invincibleTimer > 0) return; // I-fail kung naka-invincible
+
+        if (hasShield) {
+            // Basag ang shield imbes na mamatay
+            hasShield = false;
+            shieldIcon.style.display = 'none';
+            invincibleTimer = 60; // 1 segundo invincibility
+            shakeTime = 15;
+            playSound('shield_break');
+            
+            // Particles para sa basag na shield
+            for(let i=0; i<20; i++) {
+                let angle = Math.random() * Math.PI * 2;
+                particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 8 + 3, life: 1, color: '#00ffff', vx: Math.cos(angle) * 8, vy: Math.sin(angle) * 8, shape: 'circle', angle: 0 });
+            }
+            return; // Wag muna i-game over
+        }
+
+        gameState = 'GAMEOVER';
+        stopBGM(); playSound('hit'); shakeTime = 20; 
+        
+        for(let i=0; i<30; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 12 + 5, life: 1, color: charType === 'fire' ? '#ff4500' : '#00bfff', vx: Math.cos(angle) * (Math.random() * 12 + 4), vy: Math.sin(angle) * (Math.random() * 12 + 4), shape: 'circle', angle: 0 });
+        }
+
+        switchBtn.style.display = 'none'; coinHUD.style.display = 'none';
+        
+        totalCoins += coinCount; localStorage.setItem('flappyCatCoins', totalCoins);
+        if (score > highScore) { highScore = score; localStorage.setItem('flappyCatBest', highScore); }
+        
+        document.getElementById('finalScore').innerText = 'SCORE: ' + score;
+        document.getElementById('finalCoins').innerText = '🪙 COINS: ' + coinCount;
+        document.getElementById('highScore').innerText = 'BEST: ' + highScore;
+        
+        setTimeout(() => { gameOverScreen.classList.remove('hidden'); updateCoinUI(); }, 500);
+    }
+
+    function jump() {
+        if (gameState !== 'PLAYING') return;
+        cat.velocity = cat.jump; playSound('jump');
+        
+        for (let i=0; i<5; i++) {
+            particles.push({ x: cat.x + 25, y: cat.y + 45, size: Math.random() * 8 + 3, life: 1, color: '#fff', vx: (Math.random() - 0.5) * 8, vy: Math.random() * 5 + 2, shape: 'circle', angle: 0 });
+        }
+    }
+
+    function toggleElement() {
+        if (gameState !== 'PLAYING') return;
+        charType = charType === 'fire' ? 'water' : 'fire';
+        flashColor = charType === 'fire' ? 'rgba(255, 69, 0, 0.3)' : 'rgba(0, 191, 255, 0.3)';
+        setTimeout(() => { flashColor = null; }, 100);
+
+        for (let i=0; i<15; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            particles.push({ x: cat.x + 25, y: cat.y + 25, size: Math.random() * 10 + 4, life: 1, color: charType === 'fire' ? '#ff4500' : '#00bfff', vx: Math.cos(angle) * (Math.random() * 10 + 2), vy: Math.sin(angle) * (Math.random() * 10 + 2), shape: 'circle', angle: 0 });
+        }
+        updateSwitchBtnStyle(); playSound('switch');
+    }
+
+    function updateSwitchBtnStyle() {
+        if (charType === 'fire') {
+            switchBtn.style.borderColor = '#00bfff'; switchBtn.style.color = '#00bfff';
+            switchBtn.innerText = 'SWITCH TO WATER 💧';
+        } else {
+            switchBtn.style.borderColor = '#ff4500'; switchBtn.style.color = '#ff4500';
+            switchBtn.innerText = 'SWITCH TO FIRE 🔥';
+        }
+    }
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, {passive: false});
+    canvas.addEventListener('mousedown', () => jump());
+    document.addEventListener('keydown', (e) => { 
+        if (e.code === 'Space') jump(); 
+        if (e.code === 'KeyE') toggleElement();
+    });
+
+    // --- DRAWING FUNCTIONS ---
+    function drawCat(targetCtx, cx, cy, type, velocity, scale = 1.0) {
+        targetCtx.save();
+        targetCtx.translate(cx, cy);
+        targetCtx.scale(scale, scale);
+        let targetRot = Math.min(Math.PI/2, Math.max(-Math.PI/4, velocity * 0.04));
+        targetCtx.rotate(targetRot);
+
+        // Shield Bubble
+        if (hasShield) {
+            targetCtx.beginPath();
+            targetCtx.arc(0, 0, 40, 0, Math.PI * 2);
+            targetCtx.strokeStyle = 'rgba(0, 255, 255, 0.8)';
+            targetCtx.lineWidth = 4;
+            targetCtx.stroke();
+            targetCtx.fillStyle = 'rgba(0, 255, 255, 0.2)';
+            targetCtx.fill();
+        }
+
+        // Blinking effect kapag invincible
+        if (invincibleTimer > 0 && Math.floor(frames / 5) % 2 === 0) {
+            targetCtx.globalAlpha = 0.5;
+        }
+
+        targetCtx.shadowBlur = 10; targetCtx.shadowColor = type === 'fire' ? '#ff4500' : '#00bfff';
+        targetCtx.fillStyle = type === 'fire' ? '#ff7f50' : '#00ced1';
+        
+        targetCtx.beginPath(); targetCtx.ellipse(0, 0, 25, 22, 0, 0, Math.PI * 2); targetCtx.fill();
+        targetCtx.beginPath(); targetCtx.moveTo(-15, -10); targetCtx.lineTo(-22, -30); targetCtx.lineTo(-5, -20); targetCtx.fill();
+        targetCtx.beginPath(); targetCtx.moveTo(15, -10); targetCtx.lineTo(22, -30); targetCtx.lineTo(5, -20); targetCtx.fill();
+        
+        targetCtx.fillStyle = type === 'fire' ? '#ffaa80' : '#80ffff';
+        targetCtx.beginPath(); targetCtx.moveTo(-14, -13); targetCtx.lineTo(-18, -25); targetCtx.lineTo(-8, -18); targetCtx.fill();
+        targetCtx.beginPath(); targetCtx.moveTo(14, -13); targetCtx.lineTo(18, -25); targetCtx.lineTo(8, -18); targetCtx.fill();
+        targetCtx.shadowBlur = 0;
+
+        // Blinking eyes logic
+        let isBlinking = (frames % 200 < 10);
+        targetCtx.fillStyle = '#fff';
+        if (!isBlinking) {
+            targetCtx.beginPath(); targetCtx.arc(-10, -5, 9, 0, Math.PI*2); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(10, -5, 9, 0, Math.PI*2); targetCtx.fill();
+        } else {
+            targetCtx.fillRect(-15, -5, 10, 4);
+            targetCtx.fillRect(5, -5, 10, 4);
+        }
+        
+        if (!isBlinking) {
+            let pupilSize = Math.min(7, 5 + (Math.abs(velocity) * 0.1));
+            targetCtx.fillStyle = '#000';
+            targetCtx.beginPath(); targetCtx.arc(-8, -5, pupilSize, 0, Math.PI*2); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(12, -5, pupilSize, 0, Math.PI*2); targetCtx.fill();
+
+            targetCtx.fillStyle = '#fff';
+            targetCtx.beginPath(); targetCtx.arc(-7, -7, 2, 0, Math.PI*2); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.arc(13, -7, 2, 0, Math.PI*2); targetCtx.fill();
+        }
+
+        targetCtx.fillStyle = 'rgba(255, 105, 180, 0.6)';
+        targetCtx.beginPath(); targetCtx.ellipse(-16, 5, 6, 4, 0, 0, Math.PI*2); targetCtx.fill();
+        targetCtx.beginPath(); targetCtx.ellipse(16, 5, 6, 4, 0, 0, Math.PI*2); targetCtx.fill();
+
+        targetCtx.strokeStyle = '#000'; targetCtx.lineWidth = 2;
+        targetCtx.beginPath(); targetCtx.arc(-3, 5, 3, 0, Math.PI, false); targetCtx.stroke();
+        targetCtx.beginPath(); targetCtx.arc(3, 5, 3, 0, Math.PI, false); targetCtx.stroke();
+
+        targetCtx.fillStyle = type === 'fire' ? '#ff4500' : '#00bfff';
+        targetCtx.beginPath();
+        let tailWag = Math.sin(frames * 0.2) * 5;
+        if (type === 'fire') {
+            targetCtx.moveTo(-20, 10); targetCtx.quadraticCurveTo(-35, 5 + tailWag, -30, -10); targetCtx.quadraticCurveTo(-25, 5, -20, 10);
+        } else {
+            targetCtx.arc(-25, 10 + tailWag, 8, 0, Math.PI*2);
+        }
+        targetCtx.fill();
+        
+        targetCtx.restore();
+    }
+
+    function renderPreviews() {
+        const fireCanvas = document.getElementById('previewFire');
+        const fireCtx = fireCanvas.getContext('2d');
+        fireCtx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
+        drawCat(fireCtx, 50, 55, 'fire', 0, 1.2);
+
+        const waterCanvas = document.getElementById('previewWater');
+        const waterCtx = waterCanvas.getContext('2d');
+        waterCtx.clearRect(0, 0, waterCanvas.width, waterCanvas.height);
+        drawCat(waterCtx, 50, 55, 'water', 0, 1.2);
+    }
+
+    function drawCoins() {
+        coins.forEach(coin => {
+            ctx.save(); ctx.translate(coin.x, coin.y);
+            let scaleX = Math.cos(coin.angle);
+            ctx.scale(scaleX, 1);
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ffb300';
+            ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(-4, -4, 3, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        });
+    }
+
+    function drawPowerups() {
+        powerups.forEach(p => {
+            ctx.save(); ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.shadowBlur = 15;
+            
+            if (p.type === 'shield') {
+                ctx.shadowColor = '#00ffff'; ctx.fillStyle = '#00ffff';
+                ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#000'; ctx.font = '20px Arial'; ctx.textAlign = 'center'; ctx.fillText('🛡️', 0, 7);
+            } else if (p.type === 'magnet') {
+                ctx.shadowColor = '#ff4500'; ctx.fillStyle = '#ff4500';
+                ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#000'; ctx.font = '20px Arial'; ctx.textAlign = 'center'; ctx.fillText('🧲', 0, 7);
+            }
+            ctx.restore();
+        });
+    }
+
+    function drawPipes() {
+        pipes.forEach(pipe => {
+            let isGhost = (pipe.type === charType);
+            ctx.globalAlpha = isGhost ? 0.3 : 1.0;
+            let colorTop, colorBot;
+            if (pipe.type === 'fire') { colorTop = '#ff4500'; colorBot = '#8b0000'; }
+            else if (pipe.type === 'water') { colorTop = '#00bfff'; colorBot = '#00008b'; }
+            else { colorTop = '#2ecc71'; colorBot = '#145a32'; }
+
+            let gradTop = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipeWidth, 0);
+            gradTop.addColorStop(0, colorBot); gradTop.addColorStop(0.2, colorTop); gradTop.addColorStop(0.8, colorTop); gradTop.addColorStop(1, colorBot);
+            ctx.fillStyle = gradTop;
+            ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+            ctx.fillRect(pipe.x - 5, pipe.topHeight - 25, pipeWidth + 10, 25);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+            ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+            ctx.strokeRect(pipe.x - 5, pipe.topHeight - 25, pipeWidth + 10, 25);
+
+            let bottomY = pipe.topHeight + pipeGap;
+            let gradBot = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipeWidth, 0);
+            gradBot.addColorStop(0, colorBot); gradBot.addColorStop(0.2, colorTop); gradBot.addColorStop(0.8, colorTop); gradBot.addColorStop(1, colorBot);
+            ctx.fillStyle = gradBot;
+            ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
+            ctx.fillRect(pipe.x - 5, bottomY, pipeWidth + 10, 25);
+            ctx.strokeRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
+            ctx.strokeRect(pipe.x - 5, bottomY, pipeWidth + 10, 25);
+            ctx.globalAlpha = 1.0;
+        });
+    }
+
+    function drawParticles() {
+        particles.forEach((p) => {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.life;
+            
+            if (p.shape === 'heart') {
+                let s = p.size * 1.2; 
+                ctx.beginPath(); ctx.moveTo(0, s * 0.3); ctx.bezierCurveTo(0, 0, -s, 0, -s, s * 0.6); ctx.bezierCurveTo(-s, s * 1.2, 0, s * 1.5, 0, s * 1.8); ctx.bezierCurveTo(0, s * 1.5, s, s * 1.2, s, s * 0.6); ctx.bezierCurveTo(s, 0, 0, 0, 0, s * 0.3); ctx.fill();
+            } else if (p.shape === 'triangle') {
+                let s = p.size * 1.5;
+                ctx.beginPath(); ctx.moveTo(0, -s); ctx.lineTo(s * 0.8, s); ctx.lineTo(-s * 0.8, s); ctx.closePath(); ctx.fill();
+            } else if (p.shape === 'square') {
+                let s = p.size * 1.2; ctx.fillRect(-s/2, -s/2, s, s);
+            } else if (p.shape === 'star') {
+                let s = p.size * 1.5;
+                ctx.beginPath(); for (let i = 0; i < 5; i++) { ctx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * s, -Math.sin((18 + i * 72) / 180 * Math.PI) * s); ctx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * s / 2, -Math.sin((54 + i * 72) / 180 * Math.PI) * s / 2); } ctx.closePath(); ctx.fill();
+            } else {
+                ctx.beginPath(); ctx.arc(0, 0, p.size, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.restore();
+        });
+        ctx.globalAlpha = 1;
+    }
+
+    function drawWeather() {
+        let theme = themes[currentThemeIndex];
+        
+        if (frames % 2 === 0) {
+            if (theme.weather === 'rain') {
+                weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 15, size: 2, color: '#00bfff'});
+            } else if (theme.weather === 'leaves') {
+                weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed*0.5, vy: 2, size: Math.random()*4+2, color: '#ff8c00', angle: Math.random()*Math.PI});
+            } else if (theme.weather === 'meteors') {
+                if (Math.random() > 0.8) weatherParticles.push({x: Math.random()*canvas.width, y: -10, vx: -gameSpeed, vy: 10, size: Math.random()*3+1, color: '#a020f0'});
+            }
+        }
+
+        weatherParticles.forEach((wp, index) => {
+            wp.x += wp.vx; wp.y += wp.vy;
+            ctx.fillStyle = wp.color;
+            ctx.globalAlpha = 0.6;
+            
+            if (theme.weather === 'rain') {
+                ctx.fillRect(wp.x, wp.y, 2, 10);
+            } else if (theme.weather === 'leaves') {
+                ctx.save(); ctx.translate(wp.x, wp.y); ctx.rotate(frames*0.05); ctx.fillRect(-wp.size/2, -wp.size/2, wp.size, wp.size); ctx.restore();
+            } else {
+                ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size, 0, Math.PI*2); ctx.fill();
+            }
+            
+            ctx.globalAlpha = 1;
+            if (wp.y > canvas.height) weatherParticles.splice(index, 1);
+        });
+    }
+
+    function drawBackground() {
+        let currentTheme = themes[currentThemeIndex];
+        ctx.fillStyle = currentTheme.bg; ctx.fillRect(0,0,canvas.width, canvas.height);
+        
+        ctx.fillStyle = currentTheme.far;
+        ctx.beginPath(); ctx.moveTo(0, canvas.height);
+        bgHillsFar.forEach(pt => {
+            pt.x -= gameSpeed * 0.3; if(pt.x < -20) pt.x = canvas.width + 20;
+            ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.lineTo(canvas.width, canvas.height); ctx.fill();
+
+        ctx.fillStyle = currentTheme.near;
+        ctx.beginPath(); ctx.moveTo(0, canvas.height);
+        bgHillsNear.forEach(pt => {
+            pt.x -= gameSpeed * 0.6; if(pt.x < -30) pt.x = canvas.width + 30;
+            ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.lineTo(canvas.width, canvas.height); ctx.fill();
+
+        drawWeather();
+
+        if (isTransitioningMap) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${mapTransition})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            mapTransition -= 0.02;
+            if (mapTransition <= 0) { isTransitioningMap = false; mapTransition = 0; }
+        }
+    }
+
+    // --- MAIN LOOP ---
+    function update() {
+        if (gameState === 'COUNTDOWN') {
+            countdownTimer++;
+            if (countdownTimer >= 60) { countdown--; countdownTimer = 0; if (countdown <= 0) gameState = 'PLAYING'; }
+            return;
+        }
+        if (gameState !== 'PLAYING') return;
+
+        frames++;
+        cat.velocity += cat.gravity;
+        cat.y += cat.velocity;
+
+        // Combo Timer Logic
+        if (combo > 1) {
+            comboTimer--;
+            if (comboTimer <= 0) {
+                combo = 1;
+                comboHUD.style.display = 'none';
+            }
+        }
+
+        if (invincibleTimer > 0) invincibleTimer--;
+
+        // Powerup Timers
+        if (hasMagnet) {
+            magnetTimer--;
+            if (magnetTimer <= 0) {
+                hasMagnet = false;
+                magnetIcon.style.display = 'none';
+            }
+        }
+
+        // Trail Spawning
+        if (frames % 3 === 0) {
+            let pColor = '#fff', pSize = Math.random() * 8 + 6, pShape = 'circle', pAngle = 0;
+            if (equippedTrail === 'cute') { pColor = Math.random() > 0.5 ? '#ff69b4' : '#ff1493'; pShape = 'heart'; }
+            else if (equippedTrail === 'cool') { pColor = Math.random() > 0.5 ? '#00ffff' : '#1e90ff'; pShape = 'triangle'; }
+            else if (equippedTrail === 'epic') { pColor = Math.random() > 0.5 ? '#a020f0' : '#39ff14'; pShape = 'square'; pAngle = Math.random() * Math.PI; }
+            else if (equippedTrail === 'legendary') { pColor = `hsl(${(frames*5)%360}, 100%, 60%)`; pShape = 'star'; }
+            else { pColor = charType === 'fire' ? '#ff4500' : '#00bfff'; pShape = 'circle'; }
+
+            particles.push({ x: cat.x + 10, y: cat.y + 25, size: pSize, life: 1, color: pColor, vx: -4 - Math.random() * 5, vy: (Math.random() - 0.5) * 3, shape: pShape, angle: pAngle });
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx; p.y += p.vy; p.life -= 0.03; p.size *= 0.97; p.angle += 0.05; 
+            if (p.life <= 0) particles.splice(i, 1);
+        }
+
+        for (let i = scorePopups.length - 1; i >= 0; i--) {
+            let sp = scorePopups[i]; sp.y -= 2; sp.life -= 0.03;
+            if (sp.life <= 0) scorePopups.splice(i, 1);
+        }
+
+        // Spawn Pipes, Coins, Powerups
+        if (frames % pipeSpawnRate === 0) {
+            const topHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 200)) + 100;
+            let type = 'normal'; let rand = Math.random();
+            if (rand > 0.65) type = 'fire'; else if (rand > 0.35) type = 'water';
+            pipes.push({ x: canvas.width + 50, topHeight: topHeight, scored: false, type: type });
+
+            // Coin Spawn
+            if (Math.random() > 0.3) {
+                let coinY = topHeight + (pipeGap / 2);
+                coins.push({ x: canvas.width + 85, y: coinY, baseY: coinY, angle: Math.random() * Math.PI });
+            }
+            
+            // Powerup Spawn (Chance: 15%)
+            if (Math.random() > 0.85) {
+                let pType = Math.random() > 0.5 ? 'shield' : 'magnet';
+                let pY = topHeight + (pipeGap / 2) + (Math.random() > 0.5 ? 60 : -60);
+                powerups.push({ x: canvas.width + 120, y: pY, type: pType, angle: 0 });
+            }
+        }
+
+        // Update Powerups
+        for (let i = powerups.length - 1; i >= 0; i--) {
+            let p = powerups[i];
+            p.x -= gameSpeed; p.angle += 0.05;
+            
+            let dx = (cat.x + cat.width/2) - p.x;
+            let dy = (cat.y + cat.height/2) - p.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 40) {
+                if (p.type === 'shield') { hasShield = true; shieldIcon.style.display = 'block'; }
+                else if (p.type === 'magnet') { hasMagnet = true; magnetTimer = 300; magnetIcon.style.display = 'block'; }
+                
+                playSound('powerup');
+                powerups.splice(i, 1);
+                
+                // Burst particles
+                for(let k=0; k<10; k++) { particles.push({ x: p.x, y: p.y, size: Math.random()*5+2, life: 1, color: p.type==='shield'?'#00ffff':'#ff4500', vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, shape: 'circle', angle: 0 }); }
+            } else if (p.x < -50) {
+                powerups.splice(i, 1);
+            }
+        }
+
+        // Update Coins
+        for (let i = coins.length - 1; i >= 0; i--) {
+            let coin = coins[i];
+            coin.x -= gameSpeed; coin.angle += 0.1; coin.y = coin.baseY + Math.sin(coin.angle) * 15;
+            
+            // Magnet Effect
+            if (hasMagnet) {
+                let dx = (cat.x + cat.width/2) - coin.x;
+                let dy = (cat.y + cat.height/2) - coin.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 250) {
+                    coin.x += (dx / dist) * 12;
+                    coin.y += (dy / dist) * 12;
+                    coin.baseY = coin.y; // Update base so it doesn't snap back instantly
+                }
+            }
+
+            let dx = (cat.x + cat.width/2) - coin.x;
+            let dy = (cat.y + cat.height/2) - coin.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 35) {
+                coins.splice(i, 1); coinCount++; updateCoinUI(); playSound('coin');
+                
+                // Combo Logic
+                combo++; comboTimer = 180; // 3 seconds (60fps * 3)
+                comboHUD.innerText = `x${combo}`;
+                comboHUD.style.display = 'block';
+                comboHUD.style.transform = 'scale(1.3)';
+                setTimeout(() => comboHUD.style.transform = 'scale(1)', 100);
+
+                let gainedScore = 1 * combo;
+                score += gainedScore;
+                scorePopups.push({x: coin.x, y: coin.y, text: `+${gainedScore}🪙`, color: '#ffd700', life: 1});
+                
+                for(let p=0; p<5; p++) { particles.push({ x: coin.x, y: coin.y, size: Math.random() * 6 + 3, life: 1, color: '#ffd700', vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, shape: 'circle', angle: 0 }); }
+            } else if (coin.x < -50) { coins.splice(i, 1); }
+        }
+
+        // Update Pipes & Collision
+        pipes.forEach((pipe, index) => {
+            pipe.x -= gameSpeed;
+            if (pipe.type !== charType) {
+                let catBox = { x: cat.x + 12, y: cat.y + 12, w: cat.width - 24, h: cat.height - 24 };
+                if (catBox.x < pipe.x + pipeWidth && catBox.x + catBox.w > pipe.x && (catBox.y < pipe.topHeight || catBox.y + catBox.h > pipe.topHeight + pipeGap)) {
+                    gameOverAction();
+                }
+            }
+
+            if (pipe.x + pipeWidth < cat.x && !pipe.scored) {
+                pipe.scored = true; 
+                playSound('score');
+                
+                // Combo Logic (Passing pipe)
+                combo++; comboTimer = 180;
+                comboHUD.innerText = `x${combo}`;
+                comboHUD.style.display = 'block';
+                comboHUD.style.transform = 'scale(1.3)';
+                setTimeout(() => comboHUD.style.transform = 'scale(1)', 100);
+
+                let gainedScore = 1 * combo;
+                score += gainedScore;
+                
+                scorePopups.push({x: cat.x + 20, y: cat.y, text: `+${gainedScore}`, color: '#fff', life: 1});
+                
+                gameSpeed = Math.min(maxGameSpeed, gameSpeed + 0.04);
+                currentTempo = Math.max(80, currentTempo - 0.5);
+                if (pipeGap > 180 && score % 5 === 0) pipeGap -= 2; // Lumiliit gap kada 5 score
+
+                if (score > 0 && score % 30 === 0 && currentThemeIndex < themes.length - 1) {
+                    currentThemeIndex++; isTransitioningMap = true; mapTransition = 1; playSound('switch');
+                    weatherParticles.length = 0; // Reset weather
+                }
+            }
+            if (pipe.x + pipeWidth < -50) pipes.splice(index, 1);
+        });
+
+        if (cat.y + cat.height > canvas.height || cat.y < 0) gameOverAction();
+    }
+
+    function draw() {
+        ctx.save();
+        if (shakeTime > 0) { let dx = (Math.random() - 0.5) * 15; let dy = (Math.random() - 0.5) * 15; ctx.translate(dx, dy); shakeTime--; }
+
+        drawBackground(); 
+        drawPipes(); 
+        drawCoins(); 
+        drawPowerups();
+        drawParticles();
+        
+        if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
+            let bobY = Math.sin(frames * 0.1) * 3; // Idle animation
+            drawCat(ctx, cat.x + cat.width/2, cat.y + cat.height/2 + bobY, charType, cat.velocity);
+        }
+        
+        scorePopups.forEach(sp => {
+            ctx.fillStyle = sp.color; ctx.globalAlpha = sp.life;
+            ctx.font = '20px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.fillText(sp.text, sp.x, sp.y); ctx.globalAlpha = 1;
+        });
+
+        if (flashColor) { ctx.fillStyle = flashColor; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+
+        if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
+            ctx.fillStyle = '#fff'; ctx.font = '35px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.shadowBlur = 10; ctx.shadowColor = '#000'; ctx.fillText(score, canvas.width / 2, 90); ctx.shadowBlur = 0;
+        }
+
+        if (gameState === 'COUNTDOWN') {
+            ctx.fillStyle = '#ffd700'; ctx.font = '70px "Press Start 2P", cursive'; ctx.textAlign = 'center';
+            ctx.shadowBlur = 20; ctx.shadowColor = '#ff4500';
+            let displayTxt = countdown > 0 ? countdown : "FLY!";
+            ctx.fillText(displayTxt, canvas.width / 2, canvas.height / 2); ctx.shadowBlur = 0;
+        }
+        ctx.restore();
+    }
+
+    function loop() {
+        update(); draw();
+        if (gameState !== 'MENU' && gameState !== 'GAMEOVER' && gameState !== 'SHOP') requestAnimationFrame(loop);
+    }
+
+    renderPreviews();
+    draw();
+</script>
+</body>
+</html>
