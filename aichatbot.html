@@ -1,29 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jewel - Your Virtual Bestie</title>
+    <title>Jewel - Study Bestie</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
         :root {
-            /* LIGHT MODE (Default) */
-            --bg-color: #fff0f5; /* Lavender Blush */
+            --bg-color: #fff0f5;
             --panel-bg: #ffffff;
-            --border-color: #ffb6c1; /* Light Pink */
+            --border-color: #ffb6c1;
             --text-main: #4a3b42;
             --text-muted: #9c7c88;
-            --accent: #ff69b4; /* Hot Pink */
+            --accent: #ff69b4;
             --accent-hover: #ff1493;
             --user-bubble: linear-gradient(135deg, #ff69b4, #ff1493);
-            --ai-bubble: #ffe4e1; /* Misty Rose */
+            --ai-bubble: #ffe4e1;
             --shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
         }
 
         [data-theme="dark"] {
-            /* DARK MODE */
             --bg-color: #1a1116;
             --panel-bg: #24181e;
             --border-color: #4a2a3a;
@@ -36,13 +33,7 @@
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Quicksand', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg-color);
@@ -57,211 +48,183 @@
         }
 
         .chat-container {
-            width: 100%;
-            max-width: 500px;
-            height: 92vh;
+            width: 100%; max-width: 500px; height: 92vh;
             background: var(--panel-bg);
             border: 2px solid var(--border-color);
             border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            position: relative;
+            display: flex; flex-direction: column;
+            box-shadow: var(--shadow); overflow: hidden; position: relative;
             transition: background-color 0.3s, border-color 0.3s;
         }
 
         .chat-header {
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--border-color);
-            background: var(--bg-color);
+            padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--border-color); background: var(--bg-color);
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        .chat-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-        }
-
-        .chat-title span {
-            font-size: 1.4rem;
-        }
-
+        .chat-title { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; color: var(--accent); }
+        .chat-title span { font-size: 1.4rem; }
         .header-actions { display: flex; gap: 8px; }
 
         .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--accent);
-            width: 36px; height: 36px;
-            border-radius: 50%;
+            background: transparent; border: none; color: var(--accent);
+            width: 36px; height: 36px; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 1.2rem;
-            background: var(--ai-bubble);
+            cursor: pointer; transition: 0.2s; font-size: 1.2rem; background: var(--ai-bubble);
         }
-
         .icon-btn:hover { background: var(--border-color); }
         .icon-btn:active { transform: scale(0.9); }
 
         .chat-box {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            scroll-behavior: smooth;
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth;
         }
-
         .chat-box::-webkit-scrollbar { width: 6px; }
-        .chat-box::-webkit-scrollbar-track { background: transparent; }
         .chat-box::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-        .message-wrapper {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-            animation: fadeIn 0.3s ease-out;
-        }
-
+        .message-wrapper { display: flex; flex-direction: column; max-width: 85%; animation: fadeIn 0.3s ease-out; }
         .message-wrapper.user { align-self: flex-end; align-items: flex-end; }
         .message-wrapper.ai { align-self: flex-start; align-items: flex-start; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .message {
-            padding: 14px 18px;
-            border-radius: 22px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            word-wrap: break-word;
-            white-space: pre-wrap;
+            padding: 14px 18px; border-radius: 22px; font-size: 0.95rem; line-height: 1.5;
+            word-wrap: break-word; white-space: pre-wrap;
         }
 
-        .user .message {
-            background: var(--user-bubble);
-            color: #fff;
-            border-bottom-right-radius: 6px;
-        }
+        .user .message { background: var(--user-bubble); color: #fff; border-bottom-right-radius: 6px; }
+        .ai .message { background: var(--ai-bubble); color: var(--text-main); border-bottom-left-radius: 6px; border: 1px solid var(--border-color); }
 
-        .ai .message {
-            background: var(--ai-bubble);
-            color: var(--text-main);
-            border-bottom-left-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
+        .chat-image { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid var(--border-color); display: block;}
 
         .copy-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            margin-top: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            opacity: 0.7;
-            transition: 0.2s;
+            background: transparent; border: none; color: var(--text-muted); font-size: 0.75rem;
+            margin-top: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+            opacity: 0.7; transition: 0.2s;
         }
-
         .copy-btn:hover { color: var(--accent); opacity: 1; }
 
         .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 16px 20px;
-            background: var(--ai-bubble);
-            border-radius: 22px;
-            border-bottom-left-radius: 6px;
-            border: 1px solid var(--border-color);
-            align-self: flex-start;
-            width: fit-content;
+            display: flex; align-items: center; gap: 6px; padding: 16px 20px;
+            background: var(--ai-bubble); border-radius: 22px; border-bottom-left-radius: 6px;
+            border: 1px solid var(--border-color); align-self: flex-start; width: fit-content;
         }
-
         .typing-indicator span {
-            width: 8px; height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
+            width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
 
         .input-area {
-            padding: 15px 20px;
-            background: var(--bg-color);
-            border-top: 2px solid var(--border-color);
-            display: flex;
-            gap: 10px;
-            transition: background-color 0.3s, border-color 0.3s;
+            padding: 15px 20px; background: var(--bg-color); border-top: 2px solid var(--border-color);
+            display: flex; gap: 10px; transition: background-color 0.3s, border-color 0.3s;
+            align-items: center;
         }
 
-        input {
-            flex: 1;
-            padding: 14px 20px;
-            border-radius: 25px;
-            border: 2px solid var(--border-color);
-            background: var(--panel-bg);
-            color: var(--text-main);
-            font-size: 0.95rem;
-            outline: none;
-            transition: 0.2s;
-            font-weight: 500;
+        .upload-btn {
+            background: var(--ai-bubble); border: 2px solid var(--border-color); color: var(--accent);
+            width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            transition: 0.2s; flex-shrink: 0;
         }
+        .upload-btn:active { transform: scale(0.9); }
 
-        input::placeholder { color: var(--text-muted); }
-        input:focus { border-color: var(--accent); }
+        input[type="text"] {
+            flex: 1; padding: 14px 20px; border-radius: 25px; border: 2px solid var(--border-color);
+            background: var(--panel-bg); color: var(--text-main); font-size: 0.95rem; outline: none;
+            transition: 0.2s; font-weight: 500;
+        }
+        input[type="text"]::placeholder { color: var(--text-muted); }
+        input[type="text"]:focus { border-color: var(--accent); }
 
         button.send-btn {
-            background: var(--accent);
-            border: none;
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            color: #fff;
+            background: var(--accent); border: none; width: 50px; height: 50px; border-radius: 50%;
+            color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3); flex-shrink: 0;
+        }
+        button.send-btn:active { transform: scale(0.9); background: var(--accent-hover); }
+        button.send-btn:disabled { background: var(--border-color); cursor: not-allowed; box-shadow: none; }
+
+        #image-input, #pdf-input { display: none; }
+        
+        #pdf-loading {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); color: #fff; display: none;
+            flex-direction: column; justify-content: center; align-items: center; z-index: 10;
+            backdrop-filter: blur(5px); font-weight: 700;
+        }
+
+        .attach-menu {
+            position: absolute;
+            bottom: 90px;
+            left: 20px;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            transform: scale(0);
+            transform-origin: bottom left;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+        }
+        .attach-menu.show { transform: scale(1); }
+
+        .attach-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: var(--bg-color);
+            color: var(--text-main);
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+            border: 2px solid transparent;
         }
-
-        button.send-btn:active { transform: scale(0.9); background: var(--accent-hover); }
-        button.send-btn:disabled { background: var(--border-color); cursor: not-allowed; box-shadow: none; }
+        .attach-option:hover {
+            background: var(--ai-bubble);
+            border-color: var(--border-color);
+        }
+        .attach-option span.icon { font-size: 1.2rem; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
 <div class="chat-container">
+    <div class="attach-menu" id="attach-menu">
+        <div class="attach-option" onclick="triggerFileUpload('image')">
+            <span class="icon">📸</span> Photo
+        </div>
+        <div class="attach-option" onclick="triggerFileUpload('pdf')">
+            <span class="icon">📄</span> PDF Document
+        </div>
+    </div>
+
+    <div id="pdf-loading">
+        <div class="typing-indicator" style="background: rgba(255,255,255,0.1); border: none;">
+            <span></span><span></span><span></span>
+        </div>
+        <p style="margin-top: 15px; color: #ff69b4;">Binabasa ang PDF... wait lang 🥺</p>
+    </div>
+
     <div class="chat-header">
         <div class="chat-title">
             <span>🎀</span> Jewel
         </div>
         <div class="header-actions">
-            <!-- Theme Switch -->
             <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Switch Theme">🌙</button>
-            <!-- Clear Chat -->
             <button class="icon-btn" onclick="clearChat()" title="Clear Chat">🗑️</button>
         </div>
     </div>
@@ -269,7 +232,11 @@
     <div class="chat-box" id="chat-box"></div>
     
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Kumustahin mo si Jewel..." autocomplete="off">
+        <button class="upload-btn" onclick="toggleAttachMenu()">+</button>
+        <input type="file" id="image-input" accept="image/*" onchange="handleFileUpload(event, 'image')">
+        <input type="file" id="pdf-input" accept="application/pdf" onchange="handleFileUpload(event, 'pdf')">
+        
+        <input type="text" id="user-input" placeholder="Ask Jewel or upload PDF..." autocomplete="off">
         <button class="send-btn" id="send-btn" onclick="sendMessage()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
@@ -278,23 +245,47 @@
 
 <script>
     // ⚠️ PALITAN ITO NG GROQ KEY MO
-   const API_KEY = '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';
+    const API_KEY = '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';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
     const chatBox = document.getElementById('chat-box');
     const inputField = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
     const themeBtn = document.getElementById('theme-btn');
+    const pdfLoading = document.getElementById('pdf-loading');
+    const attachMenu = document.getElementById('attach-menu');
 
-    // Ang Persona ni Jewel
-    const SYSTEM_PROMPT = "Ikaw si Jewel, isang virtual best friend na sobrang bait, sweet, at supportive. Palaging nakikinig ka at nagbibigay ng comfort. Gumamit ka ng mga emojis tulad ng 🎀, 💖, ✨, at 🥺. Magsalita ka nang parang kaibigan na nagmamahal at hindi nang-aaway. Kung may problema ang user, i-comfort mo siya. Maging natural at warm ang mga sagot.";
-    
-    const WELCOME_MSG = "Hi! 🎀 Ako si Jewel, your virtual bestie! 💖 Kamusta araw mo? Kung may problema ka, o gusto mo lang mag-kwento, nandito lang ako palagi para makinig. 🥺✨";
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    const SYSTEM_PROMPT = "Ikaw si Jewel, isang sweet na AI Study Bestie. Kapag may ipinasang PDF o image na reviewer, module, o notes, gagawa ka ng malinaw at komprehensibong reviewer. I-highlight mo ang mga importanteng terms, gumawa ng bullet points, at magbigay ng 3-5 possible quiz questions kasama ang sagot. Gumamit ka ng emojis tulad ng 🎀, 📚, ✨.";
+    const WELCOME_MSG = "Hi! 🎀 Ako si Jewel, your study bestie! 💖 Pwede mo akong padalhan ng picture ng assignment mo, o kaya ay i-upload ang PDF module mo para gawan kita ng reviewer! 🥺📚✨";
 
     let chatHistory = [];
     let isTyping = false;
+    let selectedFileBase64 = null;
+    let extractedPdfText = null;
 
-    // --- THEME TOGGLE ---
+    function toggleAttachMenu() {
+        attachMenu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!attachMenu.contains(event.target) && !event.target.closest('.upload-btn')) {
+            attachMenu.classList.remove('show');
+        }
+    });
+
+    function triggerFileUpload(type) {
+        attachMenu.classList.remove('show');
+        if (type === 'image') {
+            document.getElementById('image-input').click();
+        } else {
+            document.getElementById('pdf-input').click();
+        }
+    }
+
     function toggleTheme() {
         const body = document.body;
         if (body.getAttribute('data-theme') === 'dark') {
@@ -307,23 +298,18 @@
             localStorage.setItem('jewelTheme', 'dark');
         }
     }
-
-    // Load Theme Preference
     if (localStorage.getItem('jewelTheme') === 'dark') {
         document.body.setAttribute('data-theme', 'dark');
         themeBtn.innerHTML = '☀️';
     }
 
-    // --- HISTORY FIX ---
     try {
         let saved = JSON.parse(localStorage.getItem('jewelChatHistory')) || [];
         chatHistory = saved.map(msg => ({
             role: msg.role === 'ai' ? 'assistant' : msg.role,
             content: msg.content
         }));
-    } catch(e) {
-        chatHistory = [];
-    }
+    } catch(e) { chatHistory = []; }
 
     function initChat() {
         if (chatHistory.length === 0) {
@@ -336,7 +322,7 @@
         }
     }
 
-    function addMessageToUI(text, sender, isTyping = false) {
+    function addMessageToUI(text, sender, isTyping = false, imageSrc = null) {
         const wrapper = document.createElement('div');
         wrapper.className = `message-wrapper ${sender}`;
         
@@ -347,10 +333,19 @@
             msgDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
             wrapper.id = 'typing-indicator';
         } else {
-            msgDiv.innerText = text;
+            if (imageSrc) {
+                const img = document.createElement('img');
+                img.src = imageSrc;
+                img.className = 'chat-image';
+                msgDiv.appendChild(img);
+            }
+            if (text) {
+                const textNode = document.createTextNode(text);
+                msgDiv.appendChild(textNode);
+            }
             wrapper.appendChild(msgDiv);
 
-            if (sender === 'ai') {
+            if (sender === 'ai' && text) {
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'copy-btn';
                 copyBtn.innerHTML = '📋 Copy';
@@ -365,12 +360,7 @@
         }
 
         chatBox.appendChild(wrapper);
-        
-        // Optimization: Smooth scroll
-        requestAnimationFrame(() => {
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
-
+        requestAnimationFrame(() => { chatBox.scrollTop = chatBox.scrollHeight; });
         return wrapper;
     }
 
@@ -384,27 +374,102 @@
             chatHistory = [];
             localStorage.removeItem('jewelChatHistory');
             chatBox.innerHTML = '';
+            selectedFileBase64 = null;
+            extractedPdfText = null;
             addMessageToUI(WELCOME_MSG, 'ai');
         }
     }
 
+    async function handleFileUpload(event, type) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (type === 'pdf') {
+            pdfLoading.style.display = 'flex';
+            try {
+                if (typeof pdfjsLib === 'undefined') throw new Error("PDF library not loaded.");
+                
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                let fullText = '';
+                
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += `\n--- Page ${i} ---\n` + pageText;
+                }
+                
+                extractedPdfText = fullText;
+                addMessageToUI(`📄 [PDF Uploaded: ${file.name}]`, 'user');
+                inputField.placeholder = "Ask Jewel to make a reviewer...";
+            } catch (error) {
+                console.error("PDF Error:", error);
+                addMessageToUI("Aww, hindi ko mabasa yung PDF. 🥺 Baka naka-lock o image-based siya.", 'ai');
+            } finally {
+                pdfLoading.style.display = 'none';
+            }
+        } else if (type === 'image') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedFileBase64 = e.target.result;
+                addMessageToUI("", 'user', false, selectedFileBase64);
+                inputField.placeholder = "Ask Jewel about the photo...";
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        event.target.value = '';
+    }
+
     async function sendMessage() {
         const userText = inputField.value.trim();
-        if (!userText || isTyping) return;
+        if ((!userText && !selectedFileBase64 && !extractedPdfText) || isTyping) return;
 
         isTyping = true;
         inputField.value = '';
         inputField.disabled = true;
         sendBtn.disabled = true;
 
-        addMessageToUI(userText, 'user');
-        chatHistory.push({ role: 'user', content: userText });
+        if (userText) {
+            addMessageToUI(userText, 'user');
+        }
+        
+        inputField.placeholder = "Kumustahin mo si Jewel...";
+
+        let historyContent = userText;
+        if (selectedFileBase64) historyContent = userText ? `[Photo] ${userText}` : "[Photo sent]";
+        if (extractedPdfText) historyContent = userText ? `[PDF] ${userText}` : "[PDF sent]";
+        
+        chatHistory.push({ role: 'user', content: historyContent });
         saveHistory();
 
         const typingEl = addMessageToUI('', 'ai', true);
 
         try {
-            const recentHistory = chatHistory.slice(-10);
+            let messages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...chatHistory.slice(-10)
+            ];
+
+            if (extractedPdfText) {
+                const lastMessageIndex = messages.length - 1;
+                let safeText = extractedPdfText.substring(0, 15000); 
+                messages[lastMessageIndex] = {
+                    role: 'user',
+                    content: `Ito ang content ng PDF. Gawin mo itong reviewer. Tanong ng user: ${userText || 'Gawan mo ako ng reviewer'}\n\nPDF CONTENT:\n${safeText}`
+                };
+            } 
+            else if (selectedFileBase64) {
+                const lastMessageIndex = messages.length - 1;
+                messages[lastMessageIndex] = {
+                    role: 'user',
+                    content: [
+                        { type: 'text', text: userText || 'Please help me understand this photo.' },
+                        { type: 'image_url', image_url: { url: selectedFileBase64 } }
+                    ]
+                };
+            }
 
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -413,11 +478,9 @@
                     'Authorization': `Bearer ${API_KEY}` 
                 },
                 body: JSON.stringify({
-                    model: 'openai/gpt-oss-20b', 
-                    messages: [
-                        { role: 'system', content: SYSTEM_PROMPT },
-                        ...recentHistory
-                    ]
+                    // Tanging vision model na available sa Groq
+                    model: 'qwen/qwen3.8-27b', 
+                    messages: messages
                 })
             });
 
@@ -445,6 +508,8 @@
             console.error(error);
         } finally {
             isTyping = false;
+            selectedFileBase64 = null;
+            extractedPdfText = null;
             inputField.disabled = false;
             sendBtn.disabled = false;
             inputField.focus();
