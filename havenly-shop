@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
     --cream: #faf6f0; --sand: #f0e8dc; --clay: #c67b5c; --clay-dark: #a85d3f;
     --forest: #2d4a3e; --forest-light: #3d6353; --charcoal: #2b2b2b; --muted: #8a7f6f;
     --gold: #d4a373; --white: #fffdf9; --red: #c0392b; --star: #f0a500;
-    --chat-bg: #f8f9fa;
+    --chat-bg: #f8f9fa; --grey-border: #e2e8f0;
   }
 
   body {
@@ -98,19 +99,23 @@
   .mobile-overlay.active { opacity: 1; visibility: visible; }
 
   /* ===== HERO ===== */
-  .hero { background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%); color: var(--cream); padding: 4rem 1.5rem 5rem; text-align: center; position: relative; overflow: hidden; }
+  .hero { 
+    background: linear-gradient(135deg, rgba(45, 74, 62, 0.85) 0%, rgba(61, 99, 83, 0.85) 100%), 
+                url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1600&q=80&auto=format&fit=crop') center/cover no-repeat; 
+    color: var(--cream); padding: 7rem 1.5rem 8rem; text-align: center; position: relative; overflow: hidden; 
+  }
   .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,163,115,0.25), transparent 70%); border-radius: 50%; }
   .hero::after { content: ''; position: absolute; bottom: -40%; left: -15%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(198,123,92,0.2), transparent 70%); border-radius: 50%; }
   .hero-content { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
-  .hero-badge { display: inline-block; background: rgba(212,163,115,0.2); color: var(--gold); border: 1px solid rgba(212,163,115,0.4); padding: 0.35rem 1rem; border-radius: 100px; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.3rem; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-  .hero h1 { font-size: 2.4rem; line-height: 1.15; margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+  .hero-badge { display: inline-block; background: rgba(212,163,115,0.2); color: var(--gold); border: 1px solid rgba(212,163,115,0.4); padding: 0.35rem 1rem; border-radius: 100px; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.3rem; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
+  .hero h1 { font-size: 2.8rem; line-height: 1.15; margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
   .hero h1 em { font-style: italic; color: var(--gold); }
-  .hero p { font-size: 1rem; opacity: 0.85; margin-bottom: 1.8rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .hero p { font-size: 1.1rem; opacity: 0.95; margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
   .hero-buttons { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
   .hero-btn-primary { background: var(--gold); color: var(--forest); padding: 0.85rem 1.8rem; border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.2s; box-shadow: 0 6px 20px rgba(212,163,115,0.35), inset 0 1px 1px rgba(255,255,255,0.4); }
   .hero-btn-primary:hover { background: #e0b285; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(212,163,115,0.45), inset 0 1px 1px rgba(255,255,255,0.4); }
-  .hero-btn-secondary { background: transparent; color: var(--cream); padding: 0.85rem 1.8rem; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1.5px solid rgba(250,246,240,0.35); transition: all 0.2s; }
-  .hero-btn-secondary:hover { background: rgba(250,246,240,0.1); border-color: rgba(250,246,240,0.6); transform: translateY(-3px); }
+  .hero-btn-secondary { background: rgba(250,246,240,0.1); color: var(--cream); padding: 0.85rem 1.8rem; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 1.5px solid rgba(250,246,240,0.35); transition: all 0.2s; backdrop-filter: blur(5px); }
+  .hero-btn-secondary:hover { background: rgba(250,246,240,0.2); border-color: rgba(250,246,240,0.6); transform: translateY(-3px); }
 
   /* ===== TRUST BAR ===== */
   .trust-bar { background: var(--sand); padding: 1.5rem 1.2rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; border-bottom: 1px solid rgba(198,123,92,0.15); box-shadow: inset 0 4px 10px rgba(43,43,43,0.03); }
@@ -384,6 +389,17 @@
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* ===== FOOTER ===== */
+  footer { background: var(--forest); color: var(--cream); padding: 3rem 1.2rem 1.5rem; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2rem; }
+  .footer-brand .logo { color: var(--cream); margin-bottom: 0.8rem; }
+  .footer-brand p { font-size: 0.85rem; color: rgba(250,246,240,0.7); max-width: 280px; }
+  .footer-col h4 { font-family: 'Fraunces', serif; font-size: 1rem; margin-bottom: 0.8rem; color: var(--gold); }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-col a { color: rgba(250,246,240,0.75); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom { max-width: 1100px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(250,246,240,0.15); text-align: center; font-size: 0.78rem; color: rgba(250,246,240,0.6); }
+
   /* =========================================
      CHATBOT UI
      ========================================= */
@@ -453,17 +469,19 @@
   .chat-send:hover { background: var(--forest-light); transform: scale(1.05); }
   .chat-send:active { transform: scale(0.95); }
 
+  /* ===== RESPONSIVE ===== */
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .hamburger { display: flex; }
-    .hero h1 { font-size: 2rem; }
+    .hero h1 { font-size: 2.2rem; }
     .icon-btn { width: 38px; height: 38px; font-size: 1rem; }
     .chat-window { bottom: 0; right: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
     .chat-fab { bottom: 1.5rem; right: 1.5rem; width: 55px; height: 55px; font-size: 1.5rem; }
+    .footer-inner { grid-template-columns: 1fr; gap: 1.5rem; }
   }
   @media (min-width: 700px) {
-    .hero { padding: 5rem 2rem 6rem; }
-    .hero h1 { font-size: 3.2rem; }
+    .hero { padding: 8rem 2rem 9rem; }
+    .hero h1 { font-size: 3.5rem; }
     .products { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
     .product-img-wrap { height: 200px; }
     .section-title { font-size: 2.4rem; }
@@ -622,6 +640,42 @@
     </div>
   </section>
 
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonial-section" id="testimonials">
+    <div class="testimonial-inner">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">— Real Stories</div>
+        <h2 class="section-title">What our customers say</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Super bilis ng delivery! Yung kettle, sobrang ganda ng quality. Highly recommended!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MC</div>
+            <div><div class="testimonial-name">Maria Clara</div><div class="testimonial-role">Manila</div></div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Akala ko scam kasi ang mura, pero legit! Maayos ang packaging at napakabait ng customer service."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JD</div>
+            <div><div class="testimonial-name">Juan Dela Cruz</div><div class="testimonial-role">Quezon City</div></div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Ang gaganda ng mga items! Perfect para sa mga gustong mag-upgrade ng bahay without spending too much."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">LS</div>
+            <div><div class="testimonial-name">Liza Santos</div><div class="testimonial-role">Makati</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== CONTACT ===== -->
   <section class="contact-section" id="contact">
     <div class="contact-inner">
@@ -632,10 +686,17 @@
       </div>
       <div class="contact-grid">
         <div class="contact-card reveal"><div class="contact-icon">📱</div><div><div class="contact-label">Phone</div><div class="contact-value">+63 912 345 6789</div></div></div>
-        <div class="contact-card reveal"><div class="contact-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:hello@havenly.ph">hello@havenly.ph</a></div></div></div>
+        
+        <!-- Pinalitan ang Email -->
+        <div class="contact-card reveal"><div class="contact-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:markgeraldatulod@gmail.com">markgeraldatulod@gmail.com</a></div></div></div>
+        
         <div class="contact-card reveal"><div class="contact-icon">📍</div><div><div class="contact-label">Studio</div><div class="contact-value">123 Rizal Ave, Manila</div></div></div>
         <div class="contact-card reveal"><div class="contact-icon">🕐</div><div><div class="contact-label">Hours</div><div class="contact-value">Mon–Sat: 8AM – 8PM</div></div></div>
-        <div class="contact-card reveal"><div class="contact-icon">💬</div><div><div class="contact-label">Facebook</div><div class="contact-value"><a href="https://facebook.com" target="_blank">/HavenlyPH</a></div></div></div>
+        
+        <!-- Pinalitan ang Facebook Link -->
+        <div class="contact-card reveal"><div class="contact-icon">💬</div><div><div class="contact-label">Facebook</div><div class="contact-value"><a href="https://www.facebook.com/share/1KVisJGUpu/" target="_blank">Facebook Page</a></div></div></div>
+        
+        <!-- Pinalitan ang Instagram Link -->
         <div class="contact-card reveal"><div class="contact-icon">📸</div><div><div class="contact-label">Instagram</div><div class="contact-value"><a href="https://instagram.com" target="_blank">@havenly.ph</a></div></div></div>
       </div>
     </div>
@@ -680,7 +741,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ===== CHATBOT ===== -->
+  <!-- ===== AI CHATBOT ===== -->
   <div class="chat-fab" onclick="toggleChat()" title="Chat with us">💬</div>
   
   <div class="chat-window" id="chatWindow">
@@ -733,7 +794,7 @@
       <div class="footer-col">
         <h4>Follow</h4>
         <ul>
-          <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
+          <li><a href="https://www.facebook.com/share/1KVisJGUpu/" target="_blank">Facebook</a></li>
           <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
           <li><a href="#">TikTok</a></li>
         </ul>
@@ -1211,11 +1272,37 @@
   });
 
   // =========================================
-  // SMART CHATBOT LOGIC
+  // SMART CHATBOT LOGIC (GROQ AI INTEGRATION)
   // =========================================
   const chatWindow = document.getElementById('chatWindow');
   const chatBody = document.getElementById('chatBody');
   const chatInput = document.getElementById('chatInput');
+
+  // Kunin ang API key mula sa localStorage, o i-prompt ang user
+  let GROQ_API_KEY = localStorage.getItem('havenlyApiKey');
+  if (!GROQ_API_KEY) {
+      GROQ_API_KEY = prompt("⚠️ Welcome to Havenly Assistant!\n\nI-type ang iyong Groq API Key (nagsisimula sa gsk_...) para gumana ang AI.");
+      if (GROQ_API_KEY) {
+          localStorage.setItem('havenlyApiKey', GROQ_API_KEY);
+      }
+  }
+
+  const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+  // Strict Prompt para kay Havenly lang sasagot
+  const SYSTEM_PROMPT = `Ikaw si Havenly Assistant, ang official AI customer support ng Havenly (isang online shop ng home essentials sa Pilipinas).
+
+ANG IYONG MGA GINAGAWA:
+- Sumagot ng mga tanong tungkol sa mga produkto ng Havenly (hal. Electric Kettle ₱899, LED Desk Lamp ₱449, Water Filter Pitcher ₱749, Wall Clock ₱399, Air Freshener ₱149).
+- Magbigay ng impormasyon tungkol sa shipping (Free shipping sa orders na ₱1,500+), returns (30-day returns), at contact info (Phone: +63 912 345 6789, Address: 123 Rizal Ave, Manila).
+- Maging magalang, propesyonal, at matulungin. Gumamit ng "po" at "opo".
+
+MAHIGPIT NA PATAKARAN:
+- Sumagot KA LAMANG ng mga tanong na may kinalaman sa Havenly website, produkto, shipping, presyo, o customer support.
+- KUNG ANG TANONG AY HINDI TUNGKOL SA HAVENLY (hal. homework, math, coding, o kahit anong off-topic), SABIHIN MO: "Sorry, ako po ay Havenly Assistant at ang alam ko lang po ay mga bagay tungkol sa Havenly shop. May tanong po ba kayo tungkol sa aming mga produkto o shipping?"
+- HUWAG kang magbigay ng mga personal na opinyon, balita, o impormasyon na hindi galing sa Havenly.`;
+
+  let chatHistory = [];
 
   function toggleChat() {
     chatWindow.classList.toggle('active');
@@ -1230,13 +1317,21 @@
     }
   }
 
-  function sendChatMessage() {
+  async function sendChatMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
+
+    if (!GROQ_API_KEY) {
+        appendMessage('bot', "Pasensya na po, kailangan ko po ng Groq API Key para makasagot. Paki-refresh ang page at ilagay ang key.");
+        return;
+    }
 
     // Ipakita ang user message
     appendMessage('user', text);
     chatInput.value = '';
+
+    // I-save sa history
+    chatHistory.push({ role: 'user', content: text });
 
     // Magpakita ng typing indicator
     const typingId = 'typing-' + Date.now();
@@ -1248,73 +1343,51 @@
       </div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // Mag-reply pagkatapos ng 1 segundo (parang nag-iisip)
-    setTimeout(() => {
+    try {
+      const response = await fetch(GROQ_API_URL, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}` 
+        },
+        body: JSON.stringify({
+            model: 'openai/gpt-oss-20b', // Pinakamabilis at stable na text model
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...chatHistory.slice(-6) // Huling 6 messages lang
+            ]
+        })
+      });
+
+      const data = await response.json();
+      
+      // Remove typing indicator
       document.getElementById(typingId)?.remove();
-      const reply = getBotReply(text);
-      appendMessage('bot', reply);
-    }, 1000);
+
+      if (data.choices && data.choices[0].message.content) {
+        const aiReply = data.choices[0].message.content;
+        chatHistory.push({ role: 'assistant', content: aiReply });
+        appendMessage('bot', aiReply);
+      } else if (data.error) {
+        appendMessage('bot', "Pasensya na po, may error. 🥺 " + data.error.message);
+      } else {
+        appendMessage('bot', "Pasensya na po, hindi ako makasagot ngayon.");
+      }
+
+    } catch (error) {
+      document.getElementById(typingId)?.remove();
+      appendMessage('bot', "System Error: " + error.message + ". (Kung lumalabas ito, i-check ang API key o gumamit ng live server)");
+      console.error(error);
+    }
   }
 
   function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-msg ${sender}`;
-    msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
+    msgDiv.innerHTML = `<div class="msg-bubble"></div>`;
+    msgDiv.querySelector('.msg-bubble').innerText = text;
     chatBody.appendChild(msgDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
-  }
-
-  // ANG "UTAK" NG BOT (Rule-based responses)
-  function getBotReply(input) {
-    const text = input.toLowerCase();
-
-    // 1. Mga Pagbati (Greetings)
-    if (text.match(/\b(hi|hello|hey|kumusta|kamusta|good morning|good afternoon)\b/)) {
-      return "Kumusta! 👋 Ako si Havenly Assistant. Paano kita matutulungan ngayon? Pwede kang magtanong tungkol sa shipping, presyo, o mga products.";
-    }
-
-    // 2. Shipping & Delivery
-    if (text.match(/\b(shipping|delivery|deliver|padala|tagal|how long|free)\b/)) {
-      return "🚚 **Shipping Info:**<br>• Libre ang shipping sa orders na ₱1,500 pataas!<br>• Karaniwang 1-3 days ang delivery sa Metro Manila, at 3-5 days sa probinsya.<br>• Maaari mong i-track ang order mo via email.";
-    }
-
-    // 3. Returns & Refunds
-    if (text.match(/\b(return|refund|sira|damage|palit|bawi)\b/)) {
-      return "🔄 **Returns & Refunds:**<br>May 30-day return policy kami! Kung may sira o mali ang natanggap mong item, pwede mo itong ibalik o palitan. Bisitahin lang ang Contact page para makipag-ugnayan.";
-    }
-
-    // 4. Payment Methods
-    if (text.match(/\b(payment|bayad|gcash|maya|card|credit|bank|paypal|cod)\b/)) {
-      return "💳 **Payment Options:**<br>Tumatanggap kami ng GCash, Maya, Credit/Debit Cards (Visa/Mastercard), at Cash on Delivery (COD) para sa mga order na taga-Metro Manila.";
-    }
-
-    // 5. Presyo / Price
-    if (text.match(/\b(price|magkano|presyo|how much|cost|mahal|mura)\b/)) {
-      return "💰 Ang aming mga produkto ay nagsisimula sa ₱149 hanggang ₱1,299. Pwede mong i-scroll pababa sa 'All Products' section para makita ang buong listahan at presyo. May Flash Sale din kami ngayon!";
-    }
-
-    // 6. Wishlist
-    if (text.match(/\b(wishlist|favorite|paborito|heart|save)\b/)) {
-      return "❤️ Para i-save ang isang produkto, i-tap lang ang puso (🤍) sa taas-kanan ng product card. Makikita mo lahat ng naka-save sa pamamagitan ng pag-tap sa ❤️ icon sa navigation bar.";
-    }
-
-    // 7. Location / Contact
-    if (text.match(/\b(location|address|saan|where|contact|email|phone|number)\b/)) {
-      return "📍 **Makipag-ugnayan:**<br>Address: 123 Rizal Ave, Manila<br>Email: hello@havenly.ph<br>Phone: +63 912 345 6789<br>Bukas kami Mon-Sat, 8AM-8PM.";
-    }
-
-    // 8. Legit / Trust
-    if (text.match(/\b(legit|scam|trust|safe|totoong|peke)\b/)) {
-      return "✅ **100% Legit at Secure!**<br>Ligtas ang iyong payment information. Kami ay isang curated home essentials shop na nagbebenta lamang ng quality products. Marami na kaming masasayang customers!";
-    }
-
-    // 9. Sales / Discounts
-    if (text.match(/\b(sale|discount|promo|flash|voucher|bawas)\b/)) {
-      return "⚡ **Flash Sale Alert!**<br>May hanggang 40% OFF kami ngayon! Bisitahin ang 'Flash Sale' section para sa mga deals na malapit nang mag-expire. Sumali rin sa aming Newsletter para sa 10% off code!";
-    }
-
-    // 10. Default / Fallback
-    return "Pasensya na, hindi ko masyadong naintindihan. 🤖 Pero pwede mo akong tanungin tungkol sa: <br>• Shipping & Delivery<br>• Payment Methods<br>• Returns & Refunds<br>• Presyo ng Products<br>• Contact Info";
   }
 
   // ===== INIT =====
