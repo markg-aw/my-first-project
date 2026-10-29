@@ -678,6 +678,134 @@
     .contact-logo-btn .material-symbols-outlined { font-size: 28px; }
     .contact-logo-btn .social-ico { width: 24px; height: 24px; }
   }
+/* ===== FINAL FIX: PAYMENT METHODS ===== */
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.payment-card { 
+  cursor: pointer; 
+  display: block; 
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.payment-card input[type="radio"] { 
+  display: none !important; 
+}
+
+.pay-box {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0;
+  background: #ffffff !important;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-shadow: none !important; /* Pinuputol lahat ng anino */
+}
+
+/* Inaalis yung lumang background ng icon */
+.pay-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.pay-box span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* Active State */
+.payment-card input:checked + .pay-box {
+  border-color: #10b981;
+  background: #f0fdf4 !important;
+}
+
+.payment-card input:checked + .pay-box span {
+  color: #047857;
+}
+/* Kapag clinick/naka-select */
+.payment-card input:checked + .pay-box {
+  border-color: #10b981; /* Magiging Green border */
+  background: #ecfdf5; /* Very light green background */
+}
+
+.payment-card input:checked + .pay-box span {
+  color: #047857; /* Magiging dark green text */
+}
+
+/* ACTIVE STATE (Kapag clinick) */
+.payment-card input:checked + .pay-box {
+  border-color: #10b981; /* Magiging Green border */
+  background: #ecfdf5; /* Very light green background */
+}
+
+.payment-card input:checked + .pay-box span {
+  color: #047857; /* Magiging dark green text */
+}
+
+/* Active State */
+.payment-card input:checked + .pay-box {
+  box-shadow: var(--inset-sm);
+  border-color: var(--primary);
+  background: rgba(16,185,129,0.15);
+  transform: scale(0.95);
+}
+
+.payment-card input:checked + .pay-box span {
+  color: var(--primary-dark);
+}
+
+/* Active State */
+.payment-card input:checked + .pay-box {
+  box-shadow: var(--inset-sm);
+  border-color: var(--primary);
+  background: rgba(16,185,129,0.15);
+  transform: scale(0.95);
+}
+
+.payment-card input:checked + .pay-box span {
+  color: var(--primary-dark);
+}
+
+/* Active State */
+.payment-card input:checked + .pay-box {
+  box-shadow: var(--inset-sm);
+  border-color: var(--primary);
+  background: rgba(16,185,129,0.15);
+  transform: scale(0.95);
+}
+
+.payment-card input:checked + .pay-box span {
+  color: var(--primary-dark);
+}
+
+/* Kapag clinick/naka-select (Active State) */
+.payment-card input:checked + .pay-box {
+  box-shadow: var(--inset-sm); /* Magiging hukay (inset) */
+  border-color: var(--primary);
+  background: rgba(16,185,129,0.1);
+  transform: scale(0.96);
+}
+
+.payment-card input:checked + .pay-box span {
+  color: var(--primary-dark);
+}
 </style>
 </head>
 <body>
@@ -1007,77 +1135,121 @@
       <p>&copy; 2025 Havenly. Curated with care. ✦</p>
     </div>
   </footer>
+  
+<<!-- CHECKOUT MODAL -->
+<div class="panel-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
+<div class="auth-modal" id="checkoutModal" style="max-width: 450px; text-align: left;">
+  <button class="auth-close" onclick="closeCheckout()">✕</button>
+  <h2 style="text-align:center; margin-bottom: 1.5rem;">Checkout Details</h2>
+  
+  <form onsubmit="event.preventDefault(); processOrder();">
+    <input type="text" class="auth-input" placeholder="Full Name" required>
+    <input type="tel" class="auth-input" placeholder="Phone Number" required>
+    <textarea class="auth-input" rows="2" placeholder="Complete Delivery Address" required style="resize:none;"></textarea>
+    
+    <p style="font-weight: 800; margin: 1.5rem 0 0.8rem; color: var(--forest); font-size: 0.95rem;">Payment Method</p>
+    
+<div class="payment-grid">
+  <label class="payment-card">
+    <input type="radio" name="payment" value="gcash" required>
+    <div class="pay-box">
+      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23007DFE'/><path d='M50 22C34.5 22 22 34.5 22 50s12.5 28 28 28 28-12.5 28-28S65.5 22 50 22zm3 43c-8.3 0-15-6.7-15-15s6.7-15 15-15 15 6.7 15 15-6.7 15-15 15z' fill='%23fff'/><circle cx='53' cy='50' r='7' fill='%23007DFE'/></svg>" alt="GCash">
+      <span>GCash</span>
+    </div>
+  </label>
 
+  <label class="payment-card">
+    <input type="radio" name="payment" value="maya" required>
+    <div class="pay-box">
+      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2300D26A'/><path d='M35 65V40l10 10 10-10v25h10V35H55L45 45 35 35H25v30h10z' fill='%23fff'/></svg>" alt="Maya">
+      <span>Maya</span>
+    </div>
+  </label>
+
+  <label class="payment-card">
+    <input type="radio" name="payment" value="cod" required>
+    <div class="pay-box">
+      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='40' rx='5' fill='%2310b981' stroke='%23047857' stroke-width='3'/><circle cx='50' cy='50' r='12' fill='%23fff'/><path d='M50 45v10M45 50h10' stroke='%2310b981' stroke-width='3'/></svg>" alt="COD">
+      <span>COD</span>
+    </div>
+  </label>
+</div>
+<button type="submit" class="auth-submit" style="margin-top: 1.5rem;">Confirm Order</button>
 <script>
-  const products = [
-    { id: 1, name: 'Non-Stick Frying Pan', desc: '24cm premium coating', price: 599, category: 'kitchen', badge: '',
-      rating: 4.8, reviews: 234, reviewList: [
-        { name: 'Maria C.', rating: 5, date: '2 weeks ago', text: 'Best pan I ever bought. Non-stick works perfectly even after months of use!' },
-        { name: 'Juan D.', rating: 5, date: '1 month ago', text: 'Heavy-duty and premium feel. Worth the price.' }
-      ],
-      img: 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=400&q=70&auto=format&fit=crop' },
-    { id: 2, name: 'Electric Kettle', desc: '1.7L stainless steel', price: 899, oldPrice: 1299, category: 'appliance', badge: 'flash', flash: true,
-      rating: 4.9, reviews: 512, reviewList: [
-        { name: 'Carlo M.', rating: 5, date: '1 week ago', text: 'Boils water super fast. Love the sleek design!' }
-      ],
-      img: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=70&auto=format&fit=crop' },
-    { id: 3, name: 'Storage Box Set', desc: '3-piece organizer', price: 349, category: 'storage', badge: '',
-      rating: 4.6, reviews: 89, reviewList: [
-        { name: 'Liza P.', rating: 5, date: '2 weeks ago', text: 'Perfect for organizing my closet.' }
-      ],
-      img: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&q=70&auto=format&fit=crop' },
-    { id: 4, name: 'LED Desk Lamp', desc: 'Touch control, USB', price: 449, oldPrice: 649, category: 'appliance', badge: 'flash', flash: true,
-      rating: 4.7, reviews: 156, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=70&auto=format&fit=crop' },
-    { id: 5, name: 'Broom & Dustpan', desc: 'Soft bristle set', price: 199, category: 'cleaning', badge: '',
-      rating: 4.5, reviews: 67, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=70&auto=format&fit=crop' },
-    { id: 6, name: 'Water Filter Pitcher', desc: '2.5L capacity', price: 749, oldPrice: 999, category: 'kitchen', badge: 'flash', flash: true,
-      rating: 4.8, reviews: 342, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1610824352934-c10d87b700cc?w=400&q=70&auto=format&fit=crop' },
-    { id: 7, name: 'Kitchen Knife Set', desc: '5-piece with block', price: 1299, category: 'kitchen', badge: '',
-      rating: 4.9, reviews: 487, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=400&q=70&auto=format&fit=crop' },
-    { id: 8, name: 'Laundry Basket', desc: 'Foldable, 40L', price: 299, category: 'storage', badge: '',
-      rating: 4.4, reviews: 78, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70&auto=format&fit=crop' },
-    { id: 9, name: 'Wall Clock', desc: 'Silent sweep, 12 inch', price: 399, oldPrice: 599, category: 'appliance', badge: 'flash', flash: true,
-      rating: 4.6, reviews: 123, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=400&q=70&auto=format&fit=crop' },
-    { id: 10, name: 'Rice Cooker', desc: '1.8L non-stick', price: 1099, category: 'kitchen', badge: '',
-      rating: 4.8, reviews: 298, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=70&auto=format&fit=crop' },
-    { id: 11, name: 'Dish Rack', desc: '2-tier stainless', price: 549, category: 'kitchen', badge: '',
-      rating: 4.7, reviews: 187, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?w=400&q=70&auto=format&fit=crop' },
-    { id: 12, name: 'Air Freshener', desc: 'Lavender, 300ml', price: 149, oldPrice: 249, category: 'cleaning', badge: 'flash', flash: true,
-      rating: 4.5, reviews: 156, reviewList: [],
-      img: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=70&auto=format&fit=crop' },
-    { id: 13, name: 'Bamboo Cutting Board', desc: 'Large, with juice groove', price: 379, category: 'kitchen', badge: '', emoji: '🪵',
-      rating: 4.7, reviews: 143, reviewList: [] },
-    { id: 14, name: 'Spin Mop & Bucket', desc: '360° spin, 2 microfiber heads', price: 899, oldPrice: 1199, category: 'cleaning', badge: 'flash', flash: true, emoji: '🧹',
-      rating: 4.6, reviews: 211, reviewList: [] },
-    { id: 15, name: 'Glass Food Containers', desc: '10-piece, airtight lids', price: 649, category: 'kitchen', badge: '', emoji: '🥡',
-      rating: 4.8, reviews: 176, reviewList: [] },
-    { id: 16, name: 'Over-Door Organizer', desc: '6 pockets, no drilling', price: 329, category: 'storage', badge: '', emoji: '🚪',
-      rating: 4.5, reviews: 92, reviewList: [] },
-    { id: 17, name: 'Stand Fan 16"', desc: '3 speeds, oscillating', price: 1399, category: 'appliance', badge: '', emoji: '🌀',
-      rating: 4.7, reviews: 264, reviewList: [] },
-    { id: 18, name: 'Air Fryer 4L', desc: 'Digital, 8 presets', price: 2199, oldPrice: 2799, category: 'appliance', badge: 'flash', flash: true, emoji: '🍟',
-      rating: 4.9, reviews: 276, reviewList: [] },
-    { id: 19, name: 'Microfiber Cloths', desc: '10-pack, lint-free', price: 189, category: 'cleaning', badge: '', emoji: '🧽',
-      rating: 4.6, reviews: 158, reviewList: [] },
-    { id: 20, name: 'Shoe Rack 4-Tier', desc: 'Holds 12 pairs', price: 459, category: 'storage', badge: '', emoji: '👟',
-      rating: 4.5, reviews: 104, reviewList: [] },
-    { id: 21, name: 'Personal Blender', desc: '600ml, USB rechargeable', price: 1099, oldPrice: 1499, category: 'appliance', badge: 'flash', flash: true, emoji: '🥤',
-      rating: 4.7, reviews: 189, reviewList: [] },
-    { id: 22, name: 'Dish Soap Refill', desc: 'Lemon, 1L', price: 129, category: 'cleaning', badge: '', emoji: '🧴',
-      rating: 4.4, reviews: 137, reviewList: [] },
-    { id: 23, name: 'Spice Rack Organizer', desc: '2-tier, expandable', price: 429, category: 'kitchen', badge: '', emoji: '🧂',
-      rating: 4.6, reviews: 81, reviewList: [] },
-    { id: 24, name: 'Vacuum Storage Bags', desc: '8-pack, space saver', price: 259, oldPrice: 349, category: 'storage', badge: 'flash', flash: true, emoji: '🛍️',
-      rating: 4.5, reviews: 119, reviewList: [] }
-  ];
+const products = [
+  { id: 1, name: 'Non-Stick Frying Pan', desc: '24cm premium coating', price: 599, category: 'kitchen', badge: '',
+    rating: 4.8, reviews: 234, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1584990347449-a8f68e5a7e5b?w=400&q=70&auto=format&fit=crop' },
+  { id: 2, name: 'Electric Kettle', desc: '1.7L stainless steel', price: 899, oldPrice: 1299, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.9, reviews: 512, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=400&q=70&auto=format&fit=crop' },
+  { id: 3, name: 'Storage Box Set', desc: '3-piece organizer', price: 349, category: 'storage', badge: '',
+    rating: 4.6, reviews: 89, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=400&q=70&auto=format&fit=crop' },
+  { id: 4, name: 'LED Desk Lamp', desc: 'Touch control, USB', price: 449, oldPrice: 649, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.7, reviews: 156, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=70&auto=format&fit=crop' },
+  { id: 5, name: 'Broom & Dustpan', desc: 'Soft bristle set', price: 199, category: 'cleaning', badge: '',
+    rating: 4.5, reviews: 67, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=70&auto=format&fit=crop' },
+  { id: 6, name: 'Water Filter Pitcher', desc: '2.5L capacity', price: 749, oldPrice: 999, category: 'kitchen', badge: 'flash', flash: true,
+    rating: 4.8, reviews: 342, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=70&auto=format&fit=crop' },
+  { id: 7, name: 'Kitchen Knife Set', desc: '5-piece with block', price: 1299, category: 'kitchen', badge: '',
+    rating: 4.9, reviews: 487, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=400&q=70&auto=format&fit=crop' },
+  { id: 8, name: 'Laundry Basket', desc: 'Foldable, 40L', price: 299, category: 'storage', badge: '',
+    rating: 4.4, reviews: 78, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70&auto=format&fit=crop' },
+  { id: 9, name: 'Wall Clock', desc: 'Silent sweep, 12 inch', price: 399, oldPrice: 599, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.6, reviews: 123, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=400&q=70&auto=format&fit=crop' },
+  { id: 10, name: 'Rice Cooker', desc: '1.8L non-stick', price: 1099, category: 'kitchen', badge: '',
+    rating: 4.8, reviews: 298, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&q=70&auto=format&fit=crop' },
+  { id: 11, name: 'Dish Rack', desc: '2-tier stainless', price: 549, category: 'kitchen', badge: '',
+    rating: 4.7, reviews: 187, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?w=400&q=70&auto=format&fit=crop' },
+  { id: 12, name: 'Air Freshener', desc: 'Lavender, 300ml', price: 149, oldPrice: 249, category: 'cleaning', badge: 'flash', flash: true,
+    rating: 4.5, reviews: 156, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=70&auto=format&fit=crop' },
+  { id: 13, name: 'Bamboo Cutting Board', desc: 'Large, with juice groove', price: 379, category: 'kitchen', badge: '',
+    rating: 4.7, reviews: 143, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&q=70&auto=format&fit=crop' },
+  { id: 14, name: 'Spin Mop & Bucket', desc: '360° spin, microfiber', price: 899, oldPrice: 1199, category: 'cleaning', badge: 'flash', flash: true,
+    rating: 4.6, reviews: 211, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=70&auto=format&fit=crop' },
+  { id: 15, name: 'Glass Food Containers', desc: '10-piece, airtight lids', price: 649, category: 'kitchen', badge: '',
+    rating: 4.8, reviews: 176, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=400&q=70&auto=format&fit=crop' },
+  { id: 16, name: 'Over-Door Organizer', desc: '6 pockets, no drilling', price: 329, category: 'storage', badge: '',
+    rating: 4.5, reviews: 92, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=70&auto=format&fit=crop' },
+  { id: 17, name: 'Stand Fan 16"', desc: '3 speeds, oscillating', price: 1399, category: 'appliance', badge: '',
+    rating: 4.7, reviews: 264, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1595514535415-dae8580c416c?w=400&q=70&auto=format&fit=crop' },
+  { id: 18, name: 'Air Fryer 4L', desc: 'Digital, 8 presets', price: 2199, oldPrice: 2799, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.9, reviews: 276, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=400&q=70&auto=format&fit=crop' },
+  { id: 19, name: 'Microfiber Cloths', desc: '10-pack, lint-free', price: 189, category: 'cleaning', badge: '',
+    rating: 4.6, reviews: 158, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=70&auto=format&fit=crop' },
+  { id: 20, name: 'Shoe Rack 4-Tier', desc: 'Holds 12 pairs', price: 459, category: 'storage', badge: '',
+    rating: 4.5, reviews: 104, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=400&q=70&auto=format&fit=crop' },
+  { id: 21, name: 'Personal Blender', desc: '600ml, rechargeable', price: 1099, oldPrice: 1499, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.7, reviews: 189, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&q=70&auto=format&fit=crop' },
+  { id: 22, name: 'Dish Soap Refill', desc: 'Lemon, 1L', price: 129, category: 'cleaning', badge: '',
+    rating: 4.4, reviews: 137, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&q=70&auto=format&fit=crop' },
+  { id: 23, name: 'Spice Rack Organizer', desc: '2-tier, expandable', price: 429, category: 'kitchen', badge: '',
+    rating: 4.6, reviews: 81, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=70&auto=format&fit=crop' },
+  { id: 24, name: 'Vacuum Storage Bags', desc: '8-pack, space saver', price: 259, oldPrice: 349, category: 'storage', badge: 'flash', flash: true,
+    rating: 4.5, reviews: 119, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1615800098779-1be32e60cca3?w=400&q=70&auto=format&fit=crop' }
+];
 
   const bestSellers = [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 4);
   const flashProducts = products.filter(p => p.flash);
@@ -1509,14 +1681,43 @@
     }
   }
 
-  function checkout() {
-    if (cart.length === 0) return;
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    alert(`✦ Order Confirmed\n\nTotal: ₱${total.toLocaleString()}\n\nThank you for shopping with Havenly! 🛍️`);
-    cart = [];
-    updateCart();
-    closeCart();
+  // ===== BAGONG CHECKOUT LOGIC =====
+function checkout() {
+  if (cart.length === 0) return;
+  
+  // Isara ang cart panel
+  document.getElementById('cartOverlay').classList.remove('active');
+  document.getElementById('cartPanel').classList.remove('active');
+  
+  // Buksan ang Checkout Modal
+  const checkoutModal = document.getElementById('checkoutModal');
+  const checkoutOverlay = document.getElementById('checkoutOverlay');
+  
+  if (checkoutModal && checkoutOverlay) {
+    checkoutModal.classList.add('active');
+    checkoutOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Fallback kung sakaling nawala yung HTML
+    alert("Checkout modal not found. Please check the code.");
   }
+}
+
+function closeCheckout() {
+  const checkoutModal = document.getElementById('checkoutModal');
+  const checkoutOverlay = document.getElementById('checkoutOverlay');
+  if (checkoutModal) checkoutModal.classList.remove('active');
+  if (checkoutOverlay) checkoutOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function processOrder() {
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  closeCheckout();
+  showToast(`✅ Order Placed! Total: ₱${total.toLocaleString()}`);
+  cart = [];
+  updateCart();
+}
 
   let toastTimer;
   function showToast(message) {
