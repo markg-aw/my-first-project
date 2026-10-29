@@ -1177,80 +1177,74 @@
 <button type="submit" class="auth-submit" style="margin-top: 1.5rem;">Confirm Order</button>
 <script>
 const products = [
-  { id: 1, name: 'Non-Stick Frying Pan', desc: '24cm premium coating', price: 599, category: 'kitchen', badge: '',
+  // 1. KITCHEN
+  { 
+    id: 1, name: 'Non-Stick Frying Pan', desc: '24cm premium coating', price: 599, category: 'kitchen', badge: '',
     rating: 4.8, reviews: 234, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1584990347449-a8f68e5a7e5b?w=400&q=70&auto=format&fit=crop' },
-  { id: 2, name: 'Electric Kettle', desc: '1.7L stainless steel', price: 899, oldPrice: 1299, category: 'appliance', badge: 'flash', flash: true,
-    rating: 4.9, reviews: 512, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=400&q=70&auto=format&fit=crop' },
-  { id: 3, name: 'Storage Box Set', desc: '3-piece organizer', price: 349, category: 'storage', badge: '',
-    rating: 4.6, reviews: 89, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=400&q=70&auto=format&fit=crop' },
-  { id: 4, name: 'LED Desk Lamp', desc: 'Touch control, USB', price: 449, oldPrice: 649, category: 'appliance', badge: 'flash', flash: true,
-    rating: 4.7, reviews: 156, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=70&auto=format&fit=crop' },
-  { id: 5, name: 'Broom & Dustpan', desc: 'Soft bristle set', price: 199, category: 'cleaning', badge: '',
-    rating: 4.5, reviews: 67, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=70&auto=format&fit=crop' },
-  { id: 6, name: 'Water Filter Pitcher', desc: '2.5L capacity', price: 749, oldPrice: 999, category: 'kitchen', badge: 'flash', flash: true,
-    rating: 4.8, reviews: 342, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=70&auto=format&fit=crop' },
-  { id: 7, name: 'Kitchen Knife Set', desc: '5-piece with block', price: 1299, category: 'kitchen', badge: '',
-    rating: 4.9, reviews: 487, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=400&q=70&auto=format&fit=crop' },
-  { id: 8, name: 'Laundry Basket', desc: 'Foldable, 40L', price: 299, category: 'storage', badge: '',
-    rating: 4.4, reviews: 78, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70&auto=format&fit=crop' },
-  { id: 9, name: 'Wall Clock', desc: 'Silent sweep, 12 inch', price: 399, oldPrice: 599, category: 'appliance', badge: 'flash', flash: true,
-    rating: 4.6, reviews: 123, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=400&q=70&auto=format&fit=crop' },
-  { id: 10, name: 'Rice Cooker', desc: '1.8L non-stick', price: 1099, category: 'kitchen', badge: '',
+    img: 'https://images.unsplash.com/photo-1584990347449-a8f68e5a7e5b?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 2, name: 'Rice Cooker', desc: '1.8L non-stick', price: 1099, category: 'kitchen', badge: '',
     rating: 4.8, reviews: 298, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&q=70&auto=format&fit=crop' },
-  { id: 11, name: 'Dish Rack', desc: '2-tier stainless', price: 549, category: 'kitchen', badge: '',
-    rating: 4.7, reviews: 187, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?w=400&q=70&auto=format&fit=crop' },
-  { id: 12, name: 'Air Freshener', desc: 'Lavender, 300ml', price: 149, oldPrice: 249, category: 'cleaning', badge: 'flash', flash: true,
-    rating: 4.5, reviews: 156, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=70&auto=format&fit=crop' },
-  { id: 13, name: 'Bamboo Cutting Board', desc: 'Large, with juice groove', price: 379, category: 'kitchen', badge: '',
-    rating: 4.7, reviews: 143, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&q=70&auto=format&fit=crop' },
-  { id: 14, name: 'Spin Mop & Bucket', desc: '360° spin, microfiber', price: 899, oldPrice: 1199, category: 'cleaning', badge: 'flash', flash: true,
-    rating: 4.6, reviews: 211, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=70&auto=format&fit=crop' },
-  { id: 15, name: 'Glass Food Containers', desc: '10-piece, airtight lids', price: 649, category: 'kitchen', badge: '',
-    rating: 4.8, reviews: 176, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=400&q=70&auto=format&fit=crop' },
-  { id: 16, name: 'Over-Door Organizer', desc: '6 pockets, no drilling', price: 329, category: 'storage', badge: '',
-    rating: 4.5, reviews: 92, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=70&auto=format&fit=crop' },
-  { id: 17, name: 'Stand Fan 16"', desc: '3 speeds, oscillating', price: 1399, category: 'appliance', badge: '',
-    rating: 4.7, reviews: 264, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1595514535415-dae8580c416c?w=400&q=70&auto=format&fit=crop' },
-  { id: 18, name: 'Air Fryer 4L', desc: 'Digital, 8 presets', price: 2199, oldPrice: 2799, category: 'appliance', badge: 'flash', flash: true,
-    rating: 4.9, reviews: 276, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=400&q=70&auto=format&fit=crop' },
-  { id: 19, name: 'Microfiber Cloths', desc: '10-pack, lint-free', price: 189, category: 'cleaning', badge: '',
-    rating: 4.6, reviews: 158, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=70&auto=format&fit=crop' },
-  { id: 20, name: 'Shoe Rack 4-Tier', desc: 'Holds 12 pairs', price: 459, category: 'storage', badge: '',
-    rating: 4.5, reviews: 104, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=400&q=70&auto=format&fit=crop' },
-  { id: 21, name: 'Personal Blender', desc: '600ml, rechargeable', price: 1099, oldPrice: 1499, category: 'appliance', badge: 'flash', flash: true,
-    rating: 4.7, reviews: 189, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&q=70&auto=format&fit=crop' },
-  { id: 22, name: 'Dish Soap Refill', desc: 'Lemon, 1L', price: 129, category: 'cleaning', badge: '',
-    rating: 4.4, reviews: 137, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&q=70&auto=format&fit=crop' },
-  { id: 23, name: 'Spice Rack Organizer', desc: '2-tier, expandable', price: 429, category: 'kitchen', badge: '',
-    rating: 4.6, reviews: 81, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=70&auto=format&fit=crop' },
-  { id: 24, name: 'Vacuum Storage Bags', desc: '8-pack, space saver', price: 259, oldPrice: 349, category: 'storage', badge: 'flash', flash: true,
-    rating: 4.5, reviews: 119, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1615800098779-1be32e60cca3?w=400&q=70&auto=format&fit=crop' }
-];
+    img: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 3, name: 'Kitchen Knife Set', desc: '5-piece with block', price: 1299, category: 'kitchen', badge: '',
+    rating: 4.9, reviews: 487, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 4, name: 'Water Filter Pitcher', desc: '2.5L capacity', price: 749, oldPrice: 999, category: 'kitchen', badge: 'flash', flash: true,
+    rating: 4.8, reviews: 342, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1610824352934-c10d87b700cc?w=400&q=70&auto=format&fit=crop' 
+  },
 
+  // 2. APPLIANCES
+  { 
+    id: 5, name: 'Electric Kettle', desc: '1.7L stainless steel', price: 899, oldPrice: 1299, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.9, reviews: 512, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 6, name: 'LED Desk Lamp', desc: 'Touch control, USB', price: 449, oldPrice: 649, category: 'appliance', badge: 'flash', flash: true,
+    rating: 4.7, reviews: 156, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 7, name: 'Stand Fan 16"', desc: '3 speeds, oscillating', price: 1399, category: 'appliance', badge: '',
+    rating: 4.7, reviews: 264, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1595514535415-dae8580c416c?w=400&q=70&auto=format&fit=crop' 
+  },
+
+  // 3. CLEANING
+  { 
+    id: 8, name: 'Spin Mop & Bucket', desc: '360° spin, microfiber', price: 899, oldPrice: 1199, category: 'cleaning', badge: 'flash', flash: true,
+    rating: 4.6, reviews: 211, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 9, name: 'Broom & Dustpan', desc: 'Soft bristle set', price: 199, category: 'cleaning', badge: '',
+    rating: 4.5, reviews: 67, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=70&auto=format&fit=crop' 
+  },
+
+  // 4. STORAGE
+  { 
+    id: 10, name: 'Laundry Basket', desc: 'Foldable, 40L', price: 299, category: 'storage', badge: '',
+    rating: 4.4, reviews: 78, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 11, name: 'Storage Box Set', desc: '3-piece organizer', price: 349, category: 'storage', badge: '',
+    rating: 4.6, reviews: 89, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&q=70&auto=format&fit=crop' 
+  },
+  { 
+    id: 12, name: 'Shoe Rack 4-Tier', desc: 'Holds 12 pairs', price: 459, category: 'storage', badge: '',
+    rating: 4.5, reviews: 104, reviewList: [],
+    img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=400&q=70&auto=format&fit=crop' 
+  }
+];
   const bestSellers = [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 4);
   const flashProducts = products.filter(p => p.flash);
 
