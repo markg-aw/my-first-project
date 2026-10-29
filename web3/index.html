@@ -859,7 +859,7 @@
       <div class="hero-badge">✦ Curated Home Essentials</div>
       <h1>A beautiful home<br><em>starts with Havenly.</em></h1>
       <p>Hand-picked household products that blend function and design. For people who truly care about their space.</p>
-      <div class="hero-buttons">
+        <div class="hero-buttons">
         <a href="#products" class="hero-btn-primary">Shop Collection</a>
         <a href="#flash" class="hero-btn-secondary">⚡ View Flash Sale</a>
       </div>
@@ -1136,43 +1136,62 @@
     </div>
   </footer>
   
-<<!-- CHECKOUT MODAL -->
+<!-- CHECKOUT MODAL -->
 <div class="panel-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
 <div class="auth-modal" id="checkoutModal" style="max-width: 450px; text-align: left;">
   <button class="auth-close" onclick="closeCheckout()">✕</button>
-  <h2 style="text-align:center; margin-bottom: 1.5rem;">Checkout Details</h2>
   
-  <form onsubmit="event.preventDefault(); processOrder();">
-    <input type="text" class="auth-input" placeholder="Full Name" required>
-    <input type="tel" class="auth-input" placeholder="Phone Number" required>
-    <textarea class="auth-input" rows="2" placeholder="Complete Delivery Address" required style="resize:none;"></textarea>
-    
-    <p style="font-weight: 800; margin: 1.5rem 0 0.8rem; color: var(--forest); font-size: 0.95rem;">Payment Method</p>
-    
-<div class="payment-grid">
-  <label class="payment-card">
-    <input type="radio" name="payment" value="gcash" required>
-    <div class="pay-box">
-      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23007DFE'/><path d='M50 22C34.5 22 22 34.5 22 50s12.5 28 28 28 28-12.5 28-28S65.5 22 50 22zm3 43c-8.3 0-15-6.7-15-15s6.7-15 15-15 15 6.7 15 15-6.7 15-15 15z' fill='%23fff'/><circle cx='53' cy='50' r='7' fill='%23007DFE'/></svg>" alt="GCash">
-      <span>GCash</span>
-    </div>
-  </label>
+  <!-- Checkout Form State -->
+  <div id="checkoutFormState">
+    <h2 style="text-align:center; margin-bottom: 1.5rem;">Checkout Details</h2>
+    <form id="checkoutForm" onsubmit="event.preventDefault(); processOrder();">
+      <input type="text" class="auth-input" id="coName" placeholder="Full Name" required maxlength="40">
+      <input type="tel" class="auth-input" id="coPhone" placeholder="Phone Number" required maxlength="11" pattern="[0-9]{11}" title="Please enter 11 digits (e.g. 09123456789)">
+      <textarea class="auth-input" id="coAddress" rows="2" placeholder="Complete Delivery Address" required maxlength="100" style="resize:none;"></textarea>
+      
+      <p style="font-weight: 800; margin: 1.5rem 0 0.8rem; color: var(--forest); font-size: 0.95rem;">Payment Method</p>
+      
+      <div class="payment-grid">
+        <label class="payment-card">
+          <input type="radio" name="payment" value="GCash" required>
+          <div class="pay-box">
+            <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23007DFE'/><path d='M50 22C34.5 22 22 34.5 22 50s12.5 28 28 28 28-12.5 28-28S65.5 22 50 22zm3 43c-8.3 0-15-6.7-15-15s6.7-15 15-15 15 6.7 15 15-6.7 15-15 15z' fill='%23fff'/><circle cx='53' cy='50' r='7' fill='%23007DFE'/></svg>" alt="GCash">
+            <span>GCash</span>
+          </div>
+        </label>
+        <label class="payment-card">
+          <input type="radio" name="payment" value="Maya" required>
+          <div class="pay-box">
+            <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2300D26A'/><path d='M35 65V40l10 10 10-10v25h10V35H55L45 45 35 35H25v30h10z' fill='%23fff'/></svg>" alt="Maya">
+            <span>Maya</span>
+          </div>
+        </label>
+        <label class="payment-card">
+          <input type="radio" name="payment" value="COD" required>
+          <div class="pay-box">
+            <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='40' rx='5' fill='%2310b981' stroke='%23047857' stroke-width='3'/><circle cx='50' cy='50' r='12' fill='%23fff'/><path d='M50 45v10M45 50h10' stroke='%2310b981' stroke-width='3'/></svg>" alt="COD">
+            <span>COD</span>
+          </div>
+        </label>
+      </div>
+      
+      <button type="submit" class="auth-submit" id="confirmBtn" style="margin-top: 1rem;">Confirm Order</button>
+    </form>
+  </div>
 
-  <label class="payment-card">
-    <input type="radio" name="payment" value="maya" required>
-    <div class="pay-box">
-      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%2300D26A'/><path d='M35 65V40l10 10 10-10v25h10V35H55L45 45 35 35H25v30h10z' fill='%23fff'/></svg>" alt="Maya">
-      <span>Maya</span>
+  <!-- Success State (Nakatago muna) -->
+  <div id="checkoutSuccessState" style="display: none; text-align: center; padding: 1rem 0;">
+    <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+    <h2 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Order Confirmed!</h2>
+    <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Salamat sa pagbili, <strong id="successName"></strong>!<br>Ihahatid namin ito sa iyong address sa lalong madaling panahon.</p>
+    
+    <div style="background: rgba(255,255,255,0.6); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px dashed var(--primary);">
+      <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.2rem;">Order Number</p>
+      <h3 id="orderNumber" style="font-family: monospace; letter-spacing: 1px; color: var(--text);">#HVN-00000</h3>
     </div>
-  </label>
 
-  <label class="payment-card">
-    <input type="radio" name="payment" value="cod" required>
-    <div class="pay-box">
-      <img class="pay-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='40' rx='5' fill='%2310b981' stroke='%23047857' stroke-width='3'/><circle cx='50' cy='50' r='12' fill='%23fff'/><path d='M50 45v10M45 50h10' stroke='%2310b981' stroke-width='3'/></svg>" alt="COD">
-      <span>COD</span>
-    </div>
-  </label>
+    <button class="auth-submit" onclick="finishCheckout()">Back to Shop</button>
+  </div>
 </div>
 <button type="submit" class="auth-submit" style="margin-top: 1.5rem;">Confirm Order</button>
 <script>
@@ -1181,12 +1200,13 @@ const products = [
   { 
     id: 1, name: 'Non-Stick Frying Pan', desc: '24cm premium coating', price: 599, category: 'kitchen', badge: '',
     rating: 4.8, reviews: 234, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1584990347449-a8f68e5a7e5b?w=400&q=70&auto=format&fit=crop' 
+    img: 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=400&q=70&auto=format&fit=crop' 
   },
   { 
     id: 2, name: 'Rice Cooker', desc: '1.8L non-stick', price: 1099, category: 'kitchen', badge: '',
     rating: 4.8, reviews: 298, reviewList: [],
-    img: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&q=70&auto=format&fit=crop' 
+    // TOTOONG RICE COOKER ITO
+    img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=70&auto=format&fit=crop' 
   },
   { 
     id: 3, name: 'Kitchen Knife Set', desc: '5-piece with block', price: 1299, category: 'kitchen', badge: '',
@@ -1196,6 +1216,7 @@ const products = [
   { 
     id: 4, name: 'Water Filter Pitcher', desc: '2.5L capacity', price: 749, oldPrice: 999, category: 'kitchen', badge: 'flash', flash: true,
     rating: 4.8, reviews: 342, reviewList: [],
+    // TOTOONG WATER PITCHER ITO
     img: 'https://images.unsplash.com/photo-1610824352934-c10d87b700cc?w=400&q=70&auto=format&fit=crop' 
   },
 
@@ -1213,6 +1234,7 @@ const products = [
   { 
     id: 7, name: 'Stand Fan 16"', desc: '3 speeds, oscillating', price: 1399, category: 'appliance', badge: '',
     rating: 4.7, reviews: 264, reviewList: [],
+    // TOTOONG STAND FAN ITO
     img: 'https://images.unsplash.com/photo-1595514535415-dae8580c416c?w=400&q=70&auto=format&fit=crop' 
   },
 
@@ -1220,6 +1242,7 @@ const products = [
   { 
     id: 8, name: 'Spin Mop & Bucket', desc: '360° spin, microfiber', price: 899, oldPrice: 1199, category: 'cleaning', badge: 'flash', flash: true,
     rating: 4.6, reviews: 211, reviewList: [],
+    // TOTOONG SPIN MOP ITO
     img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=70&auto=format&fit=crop' 
   },
   { 
@@ -1242,6 +1265,7 @@ const products = [
   { 
     id: 12, name: 'Shoe Rack 4-Tier', desc: 'Holds 12 pairs', price: 459, category: 'storage', badge: '',
     rating: 4.5, reviews: 104, reviewList: [],
+    // TOTOONG SHOE RACK ITO
     img: 'https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=400&q=70&auto=format&fit=crop' 
   }
 ];
@@ -1675,7 +1699,7 @@ const products = [
     }
   }
 
-  // ===== BAGONG CHECKOUT LOGIC =====
+// ===== CHECKOUT LOGIC =====
 function checkout() {
   if (cart.length === 0) return;
   
@@ -1683,36 +1707,59 @@ function checkout() {
   document.getElementById('cartOverlay').classList.remove('active');
   document.getElementById('cartPanel').classList.remove('active');
   
-  // Buksan ang Checkout Modal
-  const checkoutModal = document.getElementById('checkoutModal');
-  const checkoutOverlay = document.getElementById('checkoutOverlay');
+  // Ipakita ang Form, itago ang Success
+  document.getElementById('checkoutFormState').style.display = 'block';
+  document.getElementById('checkoutSuccessState').style.display = 'none';
   
-  if (checkoutModal && checkoutOverlay) {
-    checkoutModal.classList.add('active');
-    checkoutOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  } else {
-    // Fallback kung sakaling nawala yung HTML
-    alert("Checkout modal not found. Please check the code.");
-  }
+  // Buksan ang modal
+  document.getElementById('checkoutOverlay').classList.add('active');
+  document.getElementById('checkoutModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeCheckout() {
-  const checkoutModal = document.getElementById('checkoutModal');
-  const checkoutOverlay = document.getElementById('checkoutOverlay');
-  if (checkoutModal) checkoutModal.classList.remove('active');
-  if (checkoutOverlay) checkoutOverlay.classList.remove('active');
+  document.getElementById('checkoutOverlay').classList.remove('active');
+  document.getElementById('checkoutModal').classList.remove('active');
   document.body.style.overflow = '';
 }
 
 function processOrder() {
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  closeCheckout();
-  showToast(`✅ Order Placed! Total: ₱${total.toLocaleString()}`);
-  cart = [];
-  updateCart();
+  const btn = document.getElementById('confirmBtn');
+  const name = document.getElementById('coName').value.split(' ')[0]; // Kunin lang first name
+  
+  // 1. Ipakita ang Loading State
+  btn.textContent = 'Processing...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  // 2. Simulate na nagp-process (1.5 seconds)
+  setTimeout(() => {
+    // Gumawa ng random order number
+    const orderNum = 'HVN-' + Math.floor(10000 + Math.random() * 90000);
+    
+    // 3. Ipakita ang Success State
+    document.getElementById('successName').textContent = name;
+    document.getElementById('orderNumber').textContent = '#' + orderNum;
+    
+    document.getElementById('checkoutFormState').style.display = 'none';
+    document.getElementById('checkoutSuccessState').style.display = 'block';
+    
+    // 4. I-reset ang button at cart
+    btn.textContent = 'Confirm Order';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    document.getElementById('checkoutForm').reset();
+    
+    cart = [];
+    updateCart();
+    showToast('✅ Order placed successfully!');
+    
+  }, 1500); // 1.5 seconds loading
 }
 
+function finishCheckout() {
+  closeCheckout();
+}
   let toastTimer;
   function showToast(message) {
     const toast = document.getElementById('toast');
